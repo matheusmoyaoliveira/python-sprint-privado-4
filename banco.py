@@ -136,7 +136,7 @@ def listar_pacientes():
     cur.execute("""
         SELECT cpf, nome, idade, telefone, endereco, cartao_sus 
         FROM pacientes
-        ORDER BY id
+        ORDER BY nome
     """)
     registros = cur.fetchall()
     conn.close()
