@@ -29,7 +29,9 @@ def home():
           <li><b>Exportar JSON:</b> /exportar</li>
           <li><b>IA Predict:</b> /predict</li>
         </ul>
-        <p><b>Integrantes:</b> Matheus Moya de Oliveira e equipe</p>
+        <p><b>Integrantes:</b> Matheus Moya de Oliveira     - RM 562822</p>
+        <p><b>Integrantes:</b> Ana Carolina Pereira Fontes  - RM 562145</p>
+        <p><b>Integrantes:</b> Daniel Nicolas Leoterio      - RM 562186</p>
       </body>
     </html>
     """
