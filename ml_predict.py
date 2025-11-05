@@ -20,7 +20,6 @@ def _baixar_modelo_se_necessario():
     if os.path.exists(MODEL_PATH):
         return
 
-    # Monta a URL se vier apenas o ID
     url = MODEL_URL
     if not url and MODEL_DRIVE_ID:
         url = f"https://drive.google.com/uc?id={MODEL_DRIVE_ID}"
@@ -34,7 +33,6 @@ def _baixar_modelo_se_necessario():
     print("📥 Baixando modelo de Machine Learning do Google Drive...")
     gdown.download(url, MODEL_PATH, quiet=False)
 
-# Faz o download (se preciso) e carrega o modelo
 _baixar_modelo_se_necessario()
 modelo = joblib.load(MODEL_PATH)
 
@@ -57,8 +55,8 @@ def prever(dados):
                        dados["consultas_anteriores"],
                        dados["dias_desde_ultima"]]])
 
-        classe = int(modelo.predict(X)[0])          # 0 = comparecerá, 1 = faltará
-        prob_falta = float(modelo.predict_proba(X)[0][1])  # prob. da classe 1
+        classe = int(modelo.predict(X)[0])
+        prob_falta = float(modelo.predict_proba(X)[0][1])
 
         return {
             "resultado": "Faltará" if classe == 1 else "Comparecerá",
