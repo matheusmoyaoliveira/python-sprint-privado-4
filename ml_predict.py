@@ -6,7 +6,7 @@
 import joblib
 import numpy as np
 
-modelo = joblib.load("../sprint4-chatbot/models/classificacao.joblib")
+modelo = joblib.load("classificacao.joblib")
 
 # ------------------------------------------------------------
 # Função de predição
