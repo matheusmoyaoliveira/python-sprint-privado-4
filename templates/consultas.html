@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Consultas - NeuroAI{% endblock %}
+
+{% block conteudo %}
+<h1>Lista de Consultas</h1>
+
+<form action="/consultas/adicionar" method="post">
+    <input type="datetime-local" name="dataHora" required>
+    <input type="text" name="modalidade" placeholder="Modalidade (ex: Presencial)" required>
+    <input type="number" name="idPaciente" placeholder="ID do Paciente" required>
+    <input type="number" name="idMedico" placeholder="ID do Médico" required>
+    <button type="submit">Adicionar</button>
+</form>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Data/Hora</th>
+        <th>Modalidade</th>
+        <th>ID Paciente</th>
+        <th>ID Médico</th>
+        <th>Ações</th>
+    </tr>
+    {% for c in consultas %}
+    <tr>
+        <td>{{ c.id }}</td>
+        <td>{{ c.dataHora }}</td>
+        <td>{{ c.modalidade }}</td>
+        <td>{{ c.idPaciente }}</td>
+        <td>{{ c.idMedico }}</td>
+        <td><a href="/consultas/deletar/{{ c.id }}" onclick="return confirmarExclusao()">Excluir</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

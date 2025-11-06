@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Pacientes - NeuroAI{% endblock %}
+
+{% block conteudo %}
+<h1>Lista de Pacientes</h1>
+
+<form action="/pacientes/adicionar" method="post">
+    <input type="text" name="nome" placeholder="Nome" required>
+    <input type="text" name="cpf" placeholder="CPF" required>
+    <input type="text" name="rg" placeholder="RG">
+    <input type="text" name="altura" placeholder="Altura">
+    <input type="text" name="peso" placeholder="Peso">
+    <input type="date" name="dataNascimento" required>
+    <input type="text" name="escolaridade" placeholder="Escolaridade">
+    <input type="text" name="estadoCivil" placeholder="Estado Civil">
+    <input type="text" name="descricao" placeholder="Descrição">
+    <button type="submit">Adicionar</button>
+</form>
+
+<table>
+    <tr>
+        <th>ID</th><th>Nome</th><th>CPF</th><th>Ações</th>
+    </tr>
+    {% for p in pacientes %}
+    <tr>
+        <td>{{ p.id }}</td>
+        <td>{{ p.nome }}</td>
+        <td>{{ p.cpf }}</td>
+        <td><a href="/pacientes/deletar/{{ p.id }}" onclick="return confirmarExclusao()">Excluir</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

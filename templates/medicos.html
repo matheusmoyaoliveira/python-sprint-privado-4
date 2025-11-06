@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Médicos - NeuroAI{% endblock %}
+
+{% block conteudo %}
+<h1>Lista de Médicos</h1>
+
+<form action="/medicos/adicionar" method="post">
+    <input type="text" name="nome" placeholder="Nome" required>
+    <input type="text" name="crm" placeholder="CRM (ex: CRM-12345)" required>
+    <input type="text" name="especialidade" placeholder="Especialidade" required>
+    <input type="text" name="email" placeholder="E-mail" required>
+    <input type="text" name="telefone" placeholder="Telefone" required>
+    <button type="submit">Adicionar</button>
+</form>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>CRM</th>
+        <th>Especialidade</th>
+        <th>Email</th>
+        <th>Telefone</th>
+        <th>Ações</th>
+    </tr>
+    {% for m in medicos %}
+    <tr>
+        <td>{{ m.id }}</td>
+        <td>{{ m.nome }}</td>
+        <td>{{ m.crm }}</td>
+        <td>{{ m.especialidade }}</td>
+        <td>{{ m.email }}</td>
+        <td>{{ m.telefone }}</td>
+        <td><a href="/medicos/deletar/{{ m.id }}" onclick="return confirmarExclusao()">Excluir</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

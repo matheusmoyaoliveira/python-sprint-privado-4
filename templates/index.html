@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}NeuroAI - Sistema Hospitalar{% endblock %}
+
+{% block conteudo %}
+<h1>🏥 Bem-vindo ao Sistema Hospitalar NeuroAI</h1>
+
+<p style="text-align:center; font-size:18px; color:#444;">
+    Gerencie pacientes, médicos e consultas de forma integrada com o banco de dados Oracle.
+</p>
+
+<div class="menu">
+    <a href="/pacientes" class="menu-btn">Gerenciar Pacientes</a>
+    <a href="/medicos" class="menu-btn">Gerenciar Médicos</a>
+    <a href="/consultas" class="menu-btn">Gerenciar Consultas</a>
+</div>
+
+<div style="text-align:center; margin-top:40px; font-size:14px; color:#666;">
+    <p>© 2025 NeuroAI - Desenvolvido por Matheus Moya e equipe</p>
+</div>
+{% endblock %}

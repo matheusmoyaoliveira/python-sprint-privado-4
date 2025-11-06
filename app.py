@@ -9,6 +9,8 @@ import banco
 import ml_predict 
 import os
 
+banco.inserir_dados_iniciais()
+
 app = Flask(__name__)
 CORS(app)  
 
@@ -48,77 +50,59 @@ def listar_pacientes():
 
 @app.route("/pacientes", methods=["POST"])
 def criar_paciente():
-    try:
-        novo = request.get_json()
-        banco.inserir_paciente(novo)
-        return jsonify({"mensagem": "Paciente cadastrado com sucesso!"}), 201
-    except Exception as e:
-        return jsonify({"erro": str(e)}), 400
+    dados = request.get_json()
+    resposta, status = banco.inserir_paciente(dados)
+    return jsonify(resposta), status
 
 
 @app.route("/pacientes/<id>", methods=["PUT"])
-def atualizar_paciente(id):
-    try:
-        dados = request.get_json()
-        banco.atualizar_paciente(id, dados)
-        return jsonify({"mensagem": "Paciente atualizado com sucesso!"}), 200
-    except Exception as e:
-        return jsonify({"erro": str(e)}), 400
+def atualizar_paciente_endpoint(id):
+    dados = request.get_json()
+    ok, resposta, status = banco.atualizar_paciente(id, dados)
+    return jsonify(resposta), status
 
 
 @app.route("/pacientes/<id>", methods=["DELETE"])
-def excluir_paciente(id):
-    try:
-        banco.excluir_paciente(id)
-        return jsonify({"mensagem": "Paciente excluído com sucesso!"}), 204
-    except Exception as e:
-        return jsonify({"erro": str(e)}), 400
+def deletar_paciente(id):
+    if banco.excluir_paciente(id):
+        return "", 204
+    else:
+        return jsonify({"erro": "Paciente não encontrado"}), 404
 
 
 @app.route("/medicos", methods=["GET"])
-def listar_medicos():
-    try:
-        conn = banco.get_connection()
-        cursor = conn.cursor()
-        cursor.execute("SELECT ID_MEDICO, NM_MEDICO, NR_CRM FROM T_HC_MEDICO ORDER BY ID_MEDICO")
-        medicos = [{"id": r[0], "nome": r[1], "crm": r[2]} for r in cursor.fetchall()]
-        cursor.close()
-        conn.close()
-        return jsonify(medicos), 200
-    except Exception as e:
-        return jsonify({"erro": str(e)}), 500
+def listar_medicos_endpoint():
+    return jsonify(banco.listar_medicos())
+
+
+@app.route("/medicos/<id>", methods=["GET"])
+def buscar_medico_endpoint(id):
+    medico = banco.buscar_medico_por_id(id)
+    if medico:
+        return jsonify(medico)
+    return jsonify({"erro": "Médico não encontrado"}), 404
 
 
 @app.route("/medicos", methods=["POST"])
-def criar_medico():
-    try:
-        dados = request.get_json()
-        conn = banco.get_connection()
-        cursor = conn.cursor()
-        cursor.execute("""
-            INSERT INTO T_HC_MEDICO (ID_MEDICO, NM_MEDICO, NR_CRM)
-            VALUES (TO_CHAR(SQ_T_HC_MEDICO.NEXTVAL), :1, :2)
-        """, (dados["nome"], dados["crm"]))
-        conn.commit()
-        cursor.close()
-        conn.close()
-        return jsonify({"mensagem": "Médico cadastrado com sucesso!"}), 201
-    except Exception as e:
-        return jsonify({"erro": str(e)}), 400
+def criar_medico_endpoint():
+    dados = request.get_json()
+    resposta, status = banco.inserir_medico(dados)
+    return jsonify(resposta), status
+
+
+@app.route("/medicos/<id>", methods=["PUT"])
+def atualizar_medico_endpoint(id):
+    dados = request.get_json()
+    ok, resposta, status = banco.atualizar_medico(id, dados)
+    return jsonify(resposta), status
 
 
 @app.route("/medicos/<id>", methods=["DELETE"])
-def excluir_medico(id):
-    try:
-        conn = banco.get_connection()
-        cursor = conn.cursor()
-        cursor.execute("DELETE FROM T_HC_MEDICO WHERE ID_MEDICO = :1", (id,))
-        conn.commit()
-        cursor.close()
-        conn.close()
-        return jsonify({"mensagem": "Médico excluído com sucesso!"}), 204
-    except Exception as e:
-        return jsonify({"erro": str(e)}), 400
+def remover_medico_endpoint(id):
+    ok = banco.remover_medico(id)
+    if not ok:
+        return jsonify({"erro": "Médico não encontrado"}), 404
+    return "", 204
 
 
 @app.route("/consultas", methods=["GET"])
@@ -140,20 +124,22 @@ def listar_consultas():
 
 @app.route("/consultas", methods=["POST"])
 def criar_consulta():
-    try:
-        dados = request.get_json()
-        conn = banco.get_connection()
-        cursor = conn.cursor()
-        cursor.execute("""
-            INSERT INTO T_HC_CONSULTA (ID_CONSULTA, DT_HR_CONSULTA, DS_MODALIDADE)
-            VALUES (TO_CHAR(SQ_T_HC_CONSULTA.NEXTVAL), TO_DATE(:1, 'YYYY-MM-DD HH24:MI:SS'), :2)
-        """, (dados["dataHora"], dados["modalidade"]))
-        conn.commit()
-        cursor.close()
-        conn.close()
-        return jsonify({"mensagem": "Consulta cadastrada com sucesso!"}), 201
-    except Exception as e:
-        return jsonify({"erro": str(e)}), 400
+    dados = request.get_json()
+    resposta, status = banco.inserir_consulta(dados)
+    return jsonify(resposta), status
+
+
+@app.route("/consultas/<id>", methods=["PUT"])
+def atualizar_consulta_endpoint(id):
+    dados = request.get_json()
+    ok, resposta, status = banco.atualizar_consulta(id, dados)
+    return jsonify(resposta), status
+
+
+@app.route("/consultas/<id>", methods=["DELETE"])
+def deletar_consulta_endpoint(id):
+    ok, resposta, status = banco.deletar_consulta(id)
+    return jsonify(resposta), status
 
 
 @app.route("/exportar", methods=["GET"])
