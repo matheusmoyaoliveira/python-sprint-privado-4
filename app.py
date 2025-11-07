@@ -202,25 +202,41 @@ def exportar_json():
 # ------------------------------------------------------------
 # PREDICT
 # ------------------------------------------------------------
+import gdown
+import joblib
+import os
+import pandas as pd
+from flask import request, jsonify
+
 @app.route('/predict', methods=['POST'])
 def prever_comparecimento():
     try:
         file_id = "1YcOlIeY-aBSM7BKn1G64wg83xnHaM0Tk"
         output = "modelo_regressao.joblib"
 
-        
+        # Baixa o modelo se ainda não existir
         if not os.path.exists(output):
             gdown.download(f"https://drive.google.com/uc?id={file_id}", output, quiet=False)
 
         modelo = joblib.load(output)
 
-        
+        # Lê o JSON enviado
         dados = request.json
 
-    
+        # Monta DataFrame com as chaves exatamente iguais às usadas no treino
         X = pd.DataFrame([dados])
 
-        # 🔹 Faz predição
+        # Verifica se todas as colunas necessárias estão presentes
+        colunas_esperadas = [
+            'scholarship', 'neighbourhood', 'gender', 'age', 'appt_dow', 'handcap',
+            'waiting_days', 'hipertension', 'sms_received', 'alcoholism',
+            'is_weekend', 'sched_hour', 'diabetes'
+        ]
+        faltando = [c for c in colunas_esperadas if c not in X.columns]
+        if faltando:
+            return jsonify({"erro": f"Campos ausentes: {faltando}"}), 400
+
+        # Faz a previsão
         if hasattr(modelo, "predict_proba"):
             probabilidade = modelo.predict_proba(X)[0][1] * 100
         else:
@@ -233,3 +249,4 @@ def prever_comparecimento():
 
     except Exception as e:
         return jsonify({"erro": str(e)}), 500
+
