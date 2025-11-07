@@ -1,8 +1,7 @@
 {% extends "base.html" %}
-
 {% block title %}Médicos - NeuroAI{% endblock %}
 
-{% block conteudo %}
+{% block content %}
 <h1>Lista de Médicos</h1>
 
 <form action="/medicos/adicionar" method="post">
@@ -11,18 +10,12 @@
     <input type="text" name="especialidade" placeholder="Especialidade" required>
     <input type="text" name="email" placeholder="E-mail" required>
     <input type="text" name="telefone" placeholder="Telefone" required>
-    <button type="submit">Adicionar</button>
+    <button type="submit">Adicionar Médico</button>
 </form>
 
 <table>
     <tr>
-        <th>ID</th>
-        <th>Nome</th>
-        <th>CRM</th>
-        <th>Especialidade</th>
-        <th>Email</th>
-        <th>Telefone</th>
-        <th>Ações</th>
+        <th>ID</th><th>Nome</th><th>CRM</th><th>Especialidade</th><th>Email</th><th>Telefone</th><th>Ações</th>
     </tr>
     {% for m in medicos %}
     <tr>

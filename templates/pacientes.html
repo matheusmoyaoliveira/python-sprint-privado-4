@@ -1,34 +1,47 @@
 {% extends "base.html" %}
-
 {% block title %}Pacientes - NeuroAI{% endblock %}
 
-{% block conteudo %}
-<h1>Lista de Pacientes</h1>
+{% block content %}
+<h1>Gerenciamento de Pacientes</h1>
 
 <form action="/pacientes/adicionar" method="post">
-    <input type="text" name="nome" placeholder="Nome" required>
-    <input type="text" name="cpf" placeholder="CPF" required>
-    <input type="text" name="rg" placeholder="RG">
-    <input type="text" name="altura" placeholder="Altura">
-    <input type="text" name="peso" placeholder="Peso">
-    <input type="date" name="dataNascimento" required>
-    <input type="text" name="escolaridade" placeholder="Escolaridade">
-    <input type="text" name="estadoCivil" placeholder="Estado Civil">
-    <input type="text" name="descricao" placeholder="Descrição">
-    <button type="submit">Adicionar</button>
+  <input type="text" name="nome" placeholder="Nome" required>
+  <input type="text" name="cpf" placeholder="CPF" required>
+  <input type="text" name="rg" placeholder="RG">
+  <input type="text" name="altura" placeholder="Altura (m)">
+  <input type="text" name="peso" placeholder="Peso (kg)">
+  <input type="date" name="dataNascimento" required>
+  <input type="text" name="escolaridade" placeholder="Escolaridade">
+  <input type="text" name="estadoCivil" placeholder="Estado Civil">
+  <input type="text" name="descricao" placeholder="Descrição">
+  <button type="submit">Adicionar Paciente</button>
 </form>
 
-<table>
-    <tr>
-        <th>ID</th><th>Nome</th><th>CPF</th><th>Ações</th>
-    </tr>
-    {% for p in pacientes %}
-    <tr>
-        <td>{{ p.id }}</td>
-        <td>{{ p.nome }}</td>
-        <td>{{ p.cpf }}</td>
-        <td><a href="/pacientes/deletar/{{ p.id }}" onclick="return confirmarExclusao()">Excluir</a></td>
-    </tr>
-    {% endfor %}
-</table>
+<h2 class="table-title">Pacientes Cadastrados</h2>
+
+<section class="pacientes-lista">
+  {% for p in pacientes %}
+  <div class="card-paciente">
+    <div class="card-header">
+      <h3>{{ p.nome }}</h3>
+      <span>ID {{ p.id }}</span>
+    </div>
+    <div class="card-content">
+      <p><strong>CPF:</strong> {{ p.cpf }}</p>
+      <p><strong>RG:</strong> {{ p.rg }}</p>
+      <p><strong>Altura:</strong> {{ p.altura }} m</p>
+      <p><strong>Peso:</strong> {{ p.peso }} kg</p>
+      <p><strong>Data Nasc.:</strong> {{ p.dataNascimento }}</p>
+      <p><strong>Escolaridade:</strong> {{ p.escolaridade }}</p>
+      <p><strong>Estado Civil:</strong> {{ p.estadoCivil }}</p>
+      <p><strong>Descrição:</strong> {{ p.descricao }}</p>
+    </div>
+    <div class="card-actions">
+      <a href="/pacientes/deletar/{{ p.id }}" onclick="return confirmarExclusao()">Excluir</a>
+    </div>
+  </div>
+  {% else %}
+  <p class="empty-message">Nenhum paciente cadastrado.</p>
+  {% endfor %}
+</section>
 {% endblock %}

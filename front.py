@@ -85,5 +85,24 @@ def deletar_consulta(id):
     requests.delete(f"{API_URL}/consultas/{id}")
     return redirect("/consultas")
 
+@app.route("/prever", methods=["GET", "POST"])
+def prever():
+    resultado = None
+
+    if request.method == "POST":
+        dados = {
+            "idade": int(request.form["idade"]),
+            "frequencia": int(request.form["frequencia"]),
+            "dias_ultima_consulta": int(request.form["dias_ultima_consulta"])
+        }
+        # Envia para o endpoint /predict da API Flask
+        resposta = requests.post(f"{API_URL}/predict", json=dados)
+        if resposta.status_code == 200:
+            resultado = resposta.json().get("previsao", "Erro ao processar previsão.")
+        else:
+            resultado = "Erro na comunicação com o modelo de IA."
+
+    return render_template("prever.html", resultado=resultado)
+
 if __name__ == "__main__":
     app.run(debug=True, port=8080)

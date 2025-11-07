@@ -1,32 +1,42 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}NeuroAI{% endblock %}</title>
-    <link rel="stylesheet" href="/static/css/style.css">
-    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2927/2927347.png" type="image/png">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% if request.path == '/' %}
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+    {% endif %}
+    {% if request.path == '/pacientes' %}
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/paciente.css') }}">
+    {% endif %}
+    {% if request.path == '/medicos' %}
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/medico.css') }}">
+    {% endif %}
 </head>
 <body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <span>🧠 NeuroAI</span>
+            </div>
+            <ul class="menu">
+                <li><a href="/">Início</a></li>
+                <li><a href="/pacientes">Pacientes</a></li>
+                <li><a href="/medicos">Médicos</a></li>
+                <li><a href="/consultas">Consultas</a></li>
+                <li><a href="/prever">Previsão</a></li>
+            </ul>
+        </nav>
+    </header>
 
-    <nav class="navbar">
-        <div class="navbar-logo">
-            🧠 <span>NeuroAI</span>
-        </div>
-        <div class="navbar-links">
-            <a href="/">Início</a>
-            <a href="/pacientes">Pacientes</a>
-            <a href="/medicos">Médicos</a>
-            <a href="/consultas">Consultas</a>
-        </div>
-    </nav>
-
-    <main class="conteudo">
-        {% block conteudo %}{% endblock %}
+    <main class="{% if request.path == '/' %}inicio-main{% endif %}">
+        {% block content %}{% endblock %}
     </main>
 
-    <footer class="footer">
-        <p>© 2025 NeuroAI — Sistema Hospitalar | Desenvolvido por Matheus Moya, Daniel Nicolas Leoterio e Ana Carolina Pereira Fontes</p>
+    <footer>
+        <p>© 2025 <strong>NeuroAI</strong> — Sistema Hospitalar | Desenvolvido por <strong>Matheus Moya</strong>, Daniel Nicolas Leoterio e Ana Carolina Pereira Fontes</p>
     </footer>
-
 </body>
 </html>

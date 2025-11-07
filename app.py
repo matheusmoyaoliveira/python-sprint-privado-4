@@ -5,14 +5,23 @@
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-import banco 
-import ml_predict 
+import banco
+import ml_predict
 import os
 
 banco.inserir_dados_iniciais()
 
+if os.environ.get("WERKZEUG_RUN_MAIN") == "true":
+    try:
+        print("🔄 Verificando modelo de regressão...")
+        ml_predict._ensure_model()
+        print("✅ Modelo pronto para uso!")
+    except Exception as e:
+        print(f"⚠️ Erro ao preparar modelo: {e}")
+
+
 app = Flask(__name__)
-CORS(app)  
+CORS(app)
 
 
 @app.route("/")
@@ -152,16 +161,17 @@ def exportar_json():
         }), 200
     except Exception as e:
         return jsonify({"erro": str(e)}), 500
+    
+
+@app.route("/predict/schema", methods=["GET"])
+def predict_schema():
+    return jsonify({"schema": ml_predict.schema_esperado()})
 
 
 @app.route("/predict", methods=["POST"])
 def predict():
-    try:
-        dados = request.get_json()
-        resultado = ml_predict.prever(dados)
-        return jsonify(resultado), 200
-    except Exception as e:
-        return jsonify({"erro": str(e)}), 400
+    dados = request.get_json()
+    return jsonify(ml_predict.prever_probabilidade(dados))
 
 
 if __name__ == "__main__":

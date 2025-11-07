@@ -1,178 +1,484 @@
+/* =========================================================
+   NEUROAI — GLOBAL STYLES (style.css)
+   - Base reset, tokens, layout (header/main/footer)
+   - Tipografia, cores, botões, formulários, tabelas
+   - Utilitários e responsividade
+   ---------------------------------------------------------
+   Páginas específicas terão seus próprios arquivos:
+   - home.css, prever.css, pacientes.css, medicos.css, consultas.css
+   ========================================================= */
+
+/* ---------------------------
+   0) CSS Reset + Normalização
+   --------------------------- */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+html { -webkit-text-size-adjust: 100%; }
+
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f5f8fa;
-    margin: 0;
-    padding: 0;
-    color: #333;
+  margin: 0;
+  font-family: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
+  color: #1f2937; /* slate-800 */
+  background: #f5f7fb; /* leve */
+  line-height: 1.5;
+  letter-spacing: 0.2px;
 }
 
-h1 {
-    background-color: #007bff;
-    color: white;
-    padding: 15px;
-    text-align: center;
-    margin: 0 0 20px 0;
-    font-size: 1.8em;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+/* Suaviza fontes em alguns SOs */
+body, input, button, select, textarea {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-form {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin: 10px 0 20px 0;
+/* Remove estilização padrão de listas de navegação */
+ul { list-style: none; padding: 0; margin: 0; }
+
+/* Links */
+a { color: inherit; text-decoration: none; }
+a:focus { outline: 3px solid #93c5fd33; outline-offset: 2px; }
+
+/* Imagens responsivas */
+img, svg { max-width: 100%; height: auto; display: block; }
+
+/* ---------------------------
+   1) Design Tokens (variáveis)
+   --------------------------- */
+:root{
+  /* Cores de marca */
+  --brand: #0d6efd;              /* azul principal */
+  --brand-600: #0b5ed7;
+  --brand-700: #0a58ca;
+
+  /* Sucesso / Alerta / Erro */
+  --success: #22c55e;
+  --success-700: #15803d;
+  --warning: #f59e0b;
+  --danger:  #ef4444;
+
+  /* Neutros */
+  --bg:      #f5f7fb;
+  --card:    #ffffff;
+  --muted:   #6b7280;            /* slate-500 */
+  --line:    #e5e7eb;            /* slate-200 */
+  --shadow:  0 8px 24px rgba(15, 23, 42, 0.08);
 }
 
-form input, form button {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 14px;
+/* ---------------------------
+   2) Layout base (Header/Main/Footer)
+   --------------------------- */
+/* Deixa o footer na base da tela sem ficar "fixo" */
+body {
+  display: flex;
+  flex-direction: column;
+}
+main { flex: 1 0 auto; }
+footer { flex-shrink: 0; }
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--brand);
+  color: #fff;
+  box-shadow: 0 2px 14px rgba(2, 6, 23, .18);
 }
 
-form button {
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-    transition: 0.3s;
+.navbar .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-form button:hover {
-    background-color: #0056b3;
+.logo { font-weight: 700; letter-spacing: .2px; display: flex; align-items: center; gap: 8px; }
+.logo span { font-size: 18px; }
+
+.menu { display: flex; align-items: center; gap: 22px; }
+.menu a {
+  color: #eaf2ff;
+  font-weight: 600;
+  padding: 8px 10px;
+  border-radius: 10px;
+  transition: background .2s ease, color .2s ease, transform .08s ease-in;
+}
+.menu a:hover { background: rgba(255,255,255,.12); color: #ffffff; }
+.menu a:active { transform: translateY(1px); }
+
+/* Conteúdo padrão */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* Cartões/caixas genéricas (pode ser usada em qualquer página) */
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 24px;
+}
+
+/* Footer */
+footer {
+  background: #ffffff;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  text-align: center;
+  font-size: 14px;
+  padding: 16px 12px;
+}
+
+/* ---------------------------
+   3) Tipografia utilitária
+   --------------------------- */
+.h1, h1 { font-size: clamp(24px, 2.2vw, 32px); margin: 0 0 12px 0; color: #0b1220; }
+.h2, h2 { font-size: clamp(20px, 1.8vw, 26px); margin: 0 0 10px 0; color: #0b1220; }
+.h3, h3 { font-size: clamp(18px, 1.5vw, 22px); margin: 0 0 8px 0;  color: #0b1220; }
+
+.text-muted { color: var(--muted); }
+.text-center { text-align: center; }
+
+/* ---------------------------
+   4) Botões base + variações
+   --------------------------- */
+.btn {
+  --btn-bg: var(--brand);
+  --btn-bg-hover: var(--brand-700);
+  --btn-color: #fff;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 18px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: var(--btn-bg);
+  color: var(--btn-color);
+  font-weight: 700;
+  letter-spacing: .2px;
+  box-shadow: 0 6px 16px rgba(13,110,253,.18);
+  transition: transform .08s ease, background .2s ease, box-shadow .2s ease;
+  cursor: pointer;
+}
+.btn:hover { background: var(--btn-bg-hover); box-shadow: 0 8px 20px rgba(13,110,253,.24); }
+.btn:active { transform: translateY(1px); }
+
+.btn--primary { --btn-bg: var(--brand); --btn-bg-hover: var(--brand-700); }
+.btn--success { --btn-bg: var(--success); --btn-bg-hover: var(--success-700); box-shadow: 0 6px 16px rgba(34,197,94,.18); }
+.btn--light    {
+  --btn-bg: #f3f6ff;
+  --btn-bg-hover: #e7edff;
+  --btn-color: #0b1220;
+  border: 1px solid #dbe3ff;
+  box-shadow: 0 6px 16px rgba(2,6,23,.06);
+}
+
+/* Ícones dentro do botão (se tiver) */
+.btn i, .btn svg { font-size: 16px; }
+
+/* Grupo de botões centralizado (usado na home e outras) */
+.btn-group {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* ---------------------------
+   5) Formulários (base)
+   --------------------------- */
+label { font-weight: 600; color: #111827; display: block; margin: 10px 0 6px; }
+
+.input, input[type="text"], input[type="number"], input[type="date"],
+input[type="time"], input[type="email"], input[type="tel"],
+select, textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #d1d5db; /* gray-300 */
+  border-radius: 12px;
+  background: #fff;
+  color: #0b1220;
+  outline: none;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: #93c5fd;         /* blue-300 */
+  box-shadow: 0 0 0 4px #93c5fd33;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+@media (max-width: 800px) {
+  .form-row { grid-template-columns: 1fr; }
+}
+
+/* ---------------------------
+   6) Tabelas (base)
+   --------------------------- */
+.table-container {
+  overflow-x: auto;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
 }
 
 table {
-    width: 90%;
-    margin: auto;
-    border-collapse: collapse;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 720px;
 }
 
-th, td {
-    border: 1px solid #ccc;
-    padding: 10px;
-    text-align: left;
+thead th {
+  background: #f1f5ff;
+  color: #0b1220;
+  font-weight: 700;
+  letter-spacing: .2px;
+  text-align: left;
+  padding: 14px;
+  border-bottom: 1px solid var(--line);
 }
 
-th {
-    background-color: #e9ecef;
+tbody td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+  color: #374151; /* gray-700 */
 }
 
-tr:hover {
-    background-color: #f1f1f1;
+tbody tr:hover { background: #f9fbff; }
+
+/* Ações dentro da tabela */
+.table-actions {
+  display: flex;
+  gap: 10px;
 }
 
-a {
-    color: #007bff;
-    text-decoration: none;
+/* ---------------------------
+   7) Alertas (feedback)
+   --------------------------- */
+.alert {
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-weight: 600;
+}
+.alert--success { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+.alert--warning { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+.alert--danger  { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+
+/* ---------------------------
+   8) Utilitários rápidos
+   --------------------------- */
+.mt-0{margin-top:0}.mt-8{margin-top:8px}.mt-12{margin-top:12px}.mt-16{margin-top:16px}.mt-24{margin-top:24px}
+.mb-0{margin-bottom:0}.mb-8{margin-bottom:8px}.mb-12{margin-bottom:12px}.mb-16{margin-bottom:16px}.mb-24{margin-bottom:24px}
+.p-16{padding:16px}.p-24{padding:24px}
+.hidden { display: none !important; }
+
+/* ---------------------------
+   9) Responsividade básica
+   --------------------------- */
+@media (max-width: 1024px) {
+  .navbar .container { padding: 12px 16px; }
 }
 
-a:hover {
-    text-decoration: underline;
+@media (max-width: 720px) {
+  .menu { gap: 12px; }
+  .menu a { padding: 8px 8px; font-weight: 600; }
+  .btn { width: 100%; justify-content: center; }
 }
 
-.voltar {
-    display: inline-block;
-    margin: 20px;
-    padding: 10px 15px;
-    background-color: #007bff;
-    color: white;
-    border-radius: 5px;
-    text-decoration: none;
-    transition: 0.3s;
-}
-
-.voltar:hover {
-    background-color: #0056b3;
-}
-
-.menu {
-    display: flex;
-    justify-content: center;
-    gap: 25px;
-    margin-top: 80px;
-}
-
-.menu-btn {
-    background-color: #007bff;
-    color: white;
-    padding: 15px 30px;
-    border-radius: 10px;
-    text-decoration: none;
-    font-weight: bold;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
-    transition: all 0.3s ease;
-}
-
-.menu-btn:hover {
-    background-color: #0056b3;
-    transform: translateY(-3px);
-}
+/* ---------------------------
+   NAVBAR — topo fixo e moderno
+   --------------------------- */
 
 .navbar {
-    background-color: #007bff;
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 30px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: linear-gradient(90deg, #0d6efd, #0078ff);
+  color: #fff;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
 }
 
-.navbar-logo {
-    font-weight: bold;
-    font-size: 20px;
+.navbar .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.navbar-logo span {
-    color: #fff;
+/* Logo NeuroAI */
+.logo {
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+  transition: transform 0.3s ease;
 }
 
-.navbar-links a {
-    color: white;
-    margin-left: 20px;
-    text-decoration: none;
-    font-weight: 500;
-    transition: 0.3s;
+.logo:hover {
+  transform: scale(1.05);
 }
 
-.navbar-links a:hover {
-    text-decoration: underline;
+/* Menu superior */
+.menu {
+  display: flex;
+  align-items: center;
+  gap: 24px;
 }
 
-footer {
-    background-color: #f1f1f1;
-    text-align: center;
-    padding: 10px;
-    font-size: 14px;
-    color: #666;
-    margin-top: 30px;
-    border-top: 1px solid #ccc;
+.menu a {
+  color: #e8f2ff;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  transition: all 0.25s ease;
 }
 
-.conteudo {
-    padding: 30px;
-    margin-top: 20px;
+.menu a:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  transform: translateY(-1px);
 }
 
-html, body {
-    height: 100%;
-    display: flex;
+/* Indicação da página atual */
+.menu a.active {
+  background: #ffffff;
+  color: #0d6efd;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(255, 255, 255, 0.3);
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .navbar .container {
     flex-direction: column;
-}
+    gap: 10px;
+  }
 
-main.conteudo {
-    flex: 1;
-}
+  .menu {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+  }
 
-.footer {
-    background-color: #f1f1f1;
-    text-align: center;
-    padding: 10px;
+  .menu a {
     font-size: 14px;
-    color: #666;
-    border-top: 1px solid #ccc;
+  }
+}
+
+/* =========================================================
+   NAVBAR — Cabeçalho fixo moderno e responsivo
+   ========================================================= */
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  background: linear-gradient(90deg, #0d6efd 0%, #0078ff 100%);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 60px;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Logo fixo à esquerda */
+.logo {
+  font-weight: 800;
+  font-size: 21px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  user-select: none;
+  text-decoration: none;
+  transition: transform 0.3s ease;
+}
+
+.logo:hover {
+  transform: scale(1.05);
+}
+
+/* Centralização do menu */
+.menu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
+  flex-grow: 1;
+}
+
+/* Links da navbar como botões */
+.menu a {
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background-color: transparent;
+  transition: all 0.3s ease;
+}
+
+.menu a:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 3px 8px rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+/* Indicação da página ativa */
+.menu a.active {
+  background-color: #ffffff;
+  color: #0d6efd;
+  font-weight: 700;
+  box-shadow: 0 3px 8px rgba(255, 255, 255, 0.35);
+}
+
+/* Ajuste para manter o layout equilibrado */
+.navbar::after {
+  content: "";
+  flex-basis: 60px; /* reserva espaço do outro lado para balancear o logo */
+}
+
+/* --------------------------
+   Responsividade
+--------------------------- */
+@media (max-width: 900px) {
+  .navbar {
+    flex-direction: column;
+    padding: 14px 20px;
+  }
+
+  .menu {
+    flex-wrap: wrap;
+    gap: 14px;
+    justify-content: center;
+  }
+
+  .menu a {
+    font-size: 14px;
+    padding: 8px 14px;
+  }
+
+  .navbar::after {
+    display: none;
+  }
 }

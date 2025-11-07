@@ -4,3 +4,4 @@ cx_Oracle
 gunicorn
 requests
 joblib
+oracledb

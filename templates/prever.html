@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Previsão - NeuroAI{% endblock %}
+
+{% block content %}
+<main class="container-prever">
+    <h2>🤖 Previsão de Comparecimento</h2>
+    <p>Preencha os dados abaixo para prever a probabilidade de comparecimento do paciente.</p>
+
+    <form id="formPrever" class="form-prever">
+        <label>Gênero (H/M)</label>
+        <input type="text" name="gender" maxlength="1" required>
+
+        <label>Idade</label>
+        <input type="number" name="age" required>
+
+        <label>Bairro (número)</label>
+        <input type="number" name="neighbourhood" required>
+
+        <label>Bolsista</label>
+        <input type="number" name="scholarship" required>
+
+        <label>Hipertensão</label>
+        <input type="number" name="hipertension" required>
+
+        <label>Diabetes</label>
+        <input type="number" name="diabetes" required>
+
+        <label>Alcoolismo</label>
+        <input type="number" name="alcoholism" required>
+
+        <label>Deficiência</label>
+        <input type="number" name="handcap" required>
+
+        <label>Recebeu SMS</label>
+        <input type="number" name="sms_received" required>
+
+        <label>Dias de Espera</label>
+        <input type="number" name="waiting_days" required>
+
+        <label>Dia da Semana</label>
+        <input type="number" name="appt_dow" required>
+
+        <label>Hora Agendada</label>
+        <input type="number" name="sched_hour" required>
+
+        <label>É fim de semana</label>
+        <input type="number" name="is_weekend" required>
+
+        <button type="submit">Gerar Previsão</button>
+    </form>
+
+    <div id="resultado"></div>
+</main>
+{% endblock %}

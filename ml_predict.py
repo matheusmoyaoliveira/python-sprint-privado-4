@@ -1,67 +1,107 @@
-# ------------------------------------------------------------
-# Módulo de Machine Learning integrado à API Python
-# Faz download automático do modelo do Google Drive se necessário
-# Usa o modelo de CLASSIFICAÇÃO da Sprint 4 de IA
-# ------------------------------------------------------------
-
 import os
 import joblib
-import numpy as np
-
+import pandas as pd
 import gdown
 
-MODEL_PATH = os.getenv("MODEL_PATH", "classificacao.joblib")
 
-MODEL_DRIVE_ID = "1mxGi6txwZe0NOuCgQG0jaO2fWWv7KO7p"
-MODEL_URL = f"https://drive.google.com/uc?id={MODEL_DRIVE_ID}"
+MODEL_DRIVE_ID = "1YcOlIeY-aBSM7BKn1G64wg83xnHaM0Tk"
+MODEL_URL = f"https://drive.google.com/uc?export=download&id={MODEL_DRIVE_ID}"
+MODEL_PATH = os.path.join(os.getcwd(), "regressao.joblib")
 
-def _baixar_modelo_se_necessario():
-    """Baixa o .joblib do Google Drive se não existir localmente."""
-    if os.path.exists(MODEL_PATH):
+NUMERIC_COLS = [
+    "age", "scholarship", "hipertension", "diabetes", "alcoholism",
+    "handcap", "sms_received", "waiting_days", "appt_dow", "sched_hour", "is_weekend"
+]
+CATEGORICAL_COLS = ["gender", "neighbourhood"]
+
+_model = None
+_SCHEMA = None
+
+def _baixar_modelo():
+    """Baixa o modelo de regressão do Google Drive (forçando substituição)."""
+    print("📦 Baixando modelo de regressão do Google Drive...")
+    try:
+        if os.path.exists(MODEL_PATH):
+            os.remove(MODEL_PATH)
+
+        gdown.download(MODEL_URL, MODEL_PATH, quiet=False, fuzzy=True)
+
+        if not os.path.exists(MODEL_PATH):
+            raise FileNotFoundError("Download falhou: arquivo não encontrado após download.")
+
+        print("✅ Modelo baixado com sucesso!")
+    except Exception as e:
+        raise RuntimeError(f"Falha ao baixar modelo: {e}")
+
+def _ensure_model():
+    """Garante que o modelo esteja carregado e disponível."""
+    global _model, _SCHEMA
+    if _model is not None:
         return
 
-    url = MODEL_URL
-    if not url and MODEL_DRIVE_ID:
-        url = f"https://drive.google.com/uc?id={MODEL_DRIVE_ID}"
+    _baixar_modelo()
 
-    if not url:
-        raise RuntimeError(
-            "Modelo não encontrado localmente e nenhuma origem foi configurada. "
-            "Defina MODEL_DRIVE_ID (ID do arquivo no Drive) ou MODEL_URL (link direto)."
-        )
-
-    print("📥 Baixando modelo de Machine Learning do Google Drive...")
-    gdown.download(url, MODEL_PATH, quiet=False)
-
-_baixar_modelo_se_necessario()
-modelo = joblib.load(MODEL_PATH)
-
-
-def prever(dados):
-    """
-    Recebe um dicionário JSON com as features do paciente e retorna
-    a probabilidade de falta e a classificação.
-    Esperado (ajuste para as features do seu training set):
-    {
-        "idade": 45,
-        "faltas_anteriores": 3,
-        "consultas_anteriores": 10,
-        "dias_desde_ultima": 30
-    }
-    """
     try:
-        X = np.array([[dados["idade"],
-                       dados["faltas_anteriores"],
-                       dados["consultas_anteriores"],
-                       dados["dias_desde_ultima"]]])
+        _model = joblib.load(MODEL_PATH)
+    except Exception:
+        print("⚠️ Modelo corrompido — baixando novamente...")
+        _baixar_modelo()
+        _model = joblib.load(MODEL_PATH)
 
-        classe = int(modelo.predict(X)[0])
-        prob_falta = float(modelo.predict_proba(X)[0][1])
+    nomes = getattr(_model, "feature_names_in_", None)
+    if nomes is not None:
+        _SCHEMA = list(nomes)
+        return
+
+    try:
+        for _, step in getattr(_model, "steps", []):
+            nomes = getattr(step, "feature_names_in_", None)
+            if nomes is not None:
+                _SCHEMA = list(nomes)
+                return
+    except Exception:
+        pass
+
+    n = getattr(_model, "n_features_in_", None)
+    if n:
+        _SCHEMA = {"n_features_in": int(n)}
+    else:
+        _SCHEMA = None
+
+def schema_esperado():
+    try:
+        _ensure_model()
+        return _SCHEMA
+    except Exception as e:
+        return {"erro": str(e)}
+
+def prever_probabilidade(dados: dict):
+    try:
+        _ensure_model()
+        if not isinstance(_SCHEMA, list):
+            return {"erro": "Schema indisponível; reexporte o modelo com feature_names_in_."}
+
+        cols = _SCHEMA[:]
+        faltando = [c for c in cols if c not in dados]
+        if faltando:
+            return {"erro": f"JSON incompleto. Faltam: {faltando}", "schema_esperado": cols}
+
+        linha = {}
+        for col in cols:
+            val = dados[col]
+            if col in NUMERIC_COLS:
+                linha[col] = float(val)
+            else:
+                linha[col] = str(val)
+
+        X = pd.DataFrame([linha], columns=cols)
+        y = float(_model.predict(X)[0])
+        prob_pct = round(max(0.0, min(y * 100.0, 100.0)), 2)
 
         return {
-            "resultado": "Faltará" if classe == 1 else "Comparecerá",
-            "probabilidade_falta": round(prob_falta * 100, 2)
+            "probabilidade_comparecimento": f"{prob_pct}%",
+            "mensagem": "Alta probabilidade de comparecimento ✅" if prob_pct >= 70 else "Risco de falta detectado ⚠️",
+            "schema_utilizado": cols
         }
-
     except Exception as e:
-        return {"erro": f"Erro ao processar predição: {str(e)}"}
+        return {"erro": f"Erro ao processar previsão: {str(e)}"}
