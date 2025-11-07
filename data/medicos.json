@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "nome": "Dr. João Almeida Jr.",
+    "crm": "12345-SP",
+    "especialidade": "Cardiologia"
+  },
+  {
+    "id": 2,
+    "nome": "Dra. Fernanda Costa",
+    "crm": "67890-SP",
+    "especialidade": "Neurologia"
+  },
+  {
+    "id": 3,
+    "nome": "Dr. Daniel Leoterio",
+    "crm": "24680-SP",
+    "especialidade": "Ortopedia"
+  }
+]
