@@ -125,15 +125,25 @@ def deletar_consulta(id):
 # EXPORTAR (gera resumo consolidado)
 # ------------------------------------------------------------
 def exportar_dados_json():
-    relatorio = {
-        "pacientes": _carregar(ARQ_PACIENTES),
-        "medicos": _carregar(ARQ_MEDICOS),
-        "consultas": _carregar(ARQ_CONSULTAS),
-        "total_pacientes": len(_carregar(ARQ_PACIENTES)),
-        "total_medicos": len(_carregar(ARQ_MEDICOS)),
-        "total_consultas": len(_carregar(ARQ_CONSULTAS))
-    }
-    caminho = os.path.join(DIR, "exportacao.json")
-    with open(caminho, "w", encoding="utf-8") as f:
-        json.dump(relatorio, f, indent=4, ensure_ascii=False)
-    return relatorio
+    try:
+        with open('./data/pacientes.json', 'r', encoding='utf-8') as f:
+            pacientes = json.load(f)
+        with open('./data/medicos.json', 'r', encoding='utf-8') as f:
+            medicos = json.load(f)
+        with open('./data/consultas.json', 'r', encoding='utf-8') as f:
+            consultas = json.load(f)
+
+        relatorio = {
+            "mensagem": "Relatório gerado com sucesso!",
+            "total_pacientes": len(pacientes),
+            "total_medicos": len(medicos),
+            "total_consultas": len(consultas),
+            "pacientes": pacientes,
+            "medicos": medicos,
+            "consultas": consultas
+        }
+
+        return relatorio
+    except Exception as e:
+        return {"erro": str(e)}
+

@@ -6,6 +6,8 @@
 import os
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+import gdown
+import joblib
 
 # ------------------------------------------------------------
 # Seleciona o banco conforme o ambiente
@@ -184,6 +186,45 @@ def exportar_json():
     except Exception as e:
         return jsonify({"erro": str(e)}), 500
 
+
+# ------------------------------------------------------------
+# PREDICT
+# ------------------------------------------------------------
+@app.route('/predict', methods=['POST'])
+def prever_comparecimento():
+    try:
+        # 🔹 ID do arquivo do Google Drive (pegamos da URL que você mandou)
+        file_id = "1YcOlIeY-aBSM7BKn1G64wg83xnHaM0Tk"
+        output = "modelo_regressao.joblib"
+
+        # 🔹 Só baixa o modelo se ainda não existir no servidor (Render)
+        if not os.path.exists(output):
+            gdown.download(f"https://drive.google.com/uc?id={file_id}", output, quiet=False)
+
+        # 🔹 Carrega o modelo
+        modelo = joblib.load(output)
+
+        # 🔹 Lê os dados enviados no JSON (exemplo: {"idade": 40, "dias_espera": 15, "historico_faltas": 1})
+        dados = request.json
+        X = [[
+            dados.get("idade", 0),
+            dados.get("dias_espera", 0),
+            dados.get("historico_faltas", 0)
+        ]]
+
+        # 🔹 Faz a previsão (supondo que o modelo seja de classificação com predict_proba)
+        if hasattr(modelo, "predict_proba"):
+            probabilidade = modelo.predict_proba(X)[0][1] * 100
+        else:
+            probabilidade = modelo.predict(X)[0] * 100
+
+        return jsonify({
+            "mensagem": "Previsão gerada com sucesso!",
+            "probabilidade_comparecimento": f"{probabilidade:.2f}%"
+        })
+
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
 
 # ------------------------------------------------------------
 # EXECUÇÃO
