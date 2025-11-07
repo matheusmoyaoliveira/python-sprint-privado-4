@@ -6,7 +6,6 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_cors import CORS
 import banco
-import ml_predict
 import os
 
 banco.inserir_dados_iniciais()

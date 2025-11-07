@@ -1,6 +1,5 @@
 Flask
 Flask-Cors
-cx_Oracle
 gunicorn
 requests
 oracledb
