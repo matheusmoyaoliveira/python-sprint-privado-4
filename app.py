@@ -11,15 +11,6 @@ import os
 
 banco.inserir_dados_iniciais()
 
-if os.environ.get("WERKZEUG_RUN_MAIN") == "true":
-    try:
-        print("🔄 Verificando modelo de regressão...")
-        ml_predict._ensure_model()
-        print("✅ Modelo pronto para uso!")
-    except Exception as e:
-        print(f"⚠️ Erro ao preparar modelo: {e}")
-
-
 app = Flask(__name__)
 CORS(app)
 
