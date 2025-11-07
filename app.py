@@ -3,16 +3,17 @@
 # Integrada ao banco Oracle e à API Java
 # ------------------------------------------------------------
 
-import banco_oracle
-from flask import Flask, jsonify, request
-from flask_cors import CORS
-import json, requests
 import os
 
-if os.environ.get("RENDER", "false") == "true":
-    import banco_render as banco_oracle
+# Define qual banco usar de acordo com o ambiente
+if os.environ.get("RENDER", "false").lower() == "true":
+    import banco_render as banco
 else:
-    import banco_oracle as banco_oracle
+    import banco_oracle as banco
+
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+import banco_oracle
 
 banco_oracle.inserir_dados_iniciais()
 
