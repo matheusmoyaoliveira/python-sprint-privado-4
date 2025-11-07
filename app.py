@@ -4,7 +4,7 @@
 # ------------------------------------------------------------
 
 import os
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
 import gdown
 import joblib
@@ -180,7 +180,21 @@ def deletar_consulta_endpoint(id):
 def exportar_json():
     try:
         relatorio = banco.exportar_dados_json()
-        return jsonify(relatorio), 200
+
+        # Garante que o arquivo exista
+        caminho_arquivo = "./relatorio_api.json"
+        with open(caminho_arquivo, "w", encoding="utf-8") as f:
+            import json
+            json.dump(relatorio, f, ensure_ascii=False, indent=4)
+
+        # Envia o arquivo para download
+        return send_file(
+            caminho_arquivo,
+            mimetype="application/json",
+            as_attachment=True,
+            download_name="relatorio_api.json"
+        )
+
     except Exception as e:
         return jsonify({"erro": str(e)}), 500
 
