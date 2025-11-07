@@ -3,3 +3,4 @@ flask-cors
 gunicorn
 gdown
 scikit-learn==1.6.1
+pandas
