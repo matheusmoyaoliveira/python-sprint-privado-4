@@ -3,13 +3,18 @@
 # Integrada ao banco Oracle e à API Java
 # ------------------------------------------------------------
 
-import banco
+import banco_oracle
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import json, requests
 import os
 
-banco.inserir_dados_iniciais()
+if os.environ.get("RENDER", "false") == "true":
+    import banco_render as banco_oracle
+else:
+    import banco_oracle as banco_oracle
+
+banco_oracle.inserir_dados_iniciais()
 
 app = Flask(__name__)
 CORS(app)
@@ -42,7 +47,7 @@ def home():
 @app.route("/pacientes", methods=["GET"])
 def listar_pacientes():
     try:
-        dados = banco.listar_pacientes()
+        dados = banco_oracle.listar_pacientes()
         return jsonify(dados), 200
     except Exception as e:
         return jsonify({"erro": str(e)}), 500
@@ -51,20 +56,20 @@ def listar_pacientes():
 @app.route("/pacientes", methods=["POST"])
 def criar_paciente():
     dados = request.get_json()
-    resposta, status = banco.inserir_paciente(dados)
+    resposta, status = banco_oracle.inserir_paciente(dados)
     return jsonify(resposta), status
 
 
 @app.route("/pacientes/<id>", methods=["PUT"])
 def atualizar_paciente_endpoint(id):
     dados = request.get_json()
-    ok, resposta, status = banco.atualizar_paciente(id, dados)
+    ok, resposta, status = banco_oracle.atualizar_paciente(id, dados)
     return jsonify(resposta), status
 
 
 @app.route("/pacientes/<id>", methods=["DELETE"])
 def deletar_paciente(id):
-    if banco.excluir_paciente(id):
+    if banco_oracle.excluir_paciente(id):
         return "", 204
     else:
         return jsonify({"erro": "Paciente não encontrado"}), 404
@@ -72,12 +77,12 @@ def deletar_paciente(id):
 
 @app.route("/medicos", methods=["GET"])
 def listar_medicos_endpoint():
-    return jsonify(banco.listar_medicos())
+    return jsonify(banco_oracle.listar_medicos())
 
 
 @app.route("/medicos/<id>", methods=["GET"])
 def buscar_medico_endpoint(id):
-    medico = banco.buscar_medico_por_id(id)
+    medico = banco_oracle.buscar_medico_por_id(id)
     if medico:
         return jsonify(medico)
     return jsonify({"erro": "Médico não encontrado"}), 404
@@ -86,20 +91,20 @@ def buscar_medico_endpoint(id):
 @app.route("/medicos", methods=["POST"])
 def criar_medico_endpoint():
     dados = request.get_json()
-    resposta, status = banco.inserir_medico(dados)
+    resposta, status = banco_oracle.inserir_medico(dados)
     return jsonify(resposta), status
 
 
 @app.route("/medicos/<id>", methods=["PUT"])
 def atualizar_medico_endpoint(id):
     dados = request.get_json()
-    ok, resposta, status = banco.atualizar_medico(id, dados)
+    ok, resposta, status = banco_oracle.atualizar_medico(id, dados)
     return jsonify(resposta), status
 
 
 @app.route("/medicos/<id>", methods=["DELETE"])
 def remover_medico_endpoint(id):
-    ok = banco.remover_medico(id)
+    ok = banco_oracle.remover_medico(id)
     if not ok:
         return jsonify({"erro": "Médico não encontrado"}), 404
     return "", 204
@@ -108,7 +113,7 @@ def remover_medico_endpoint(id):
 @app.route("/consultas", methods=["GET"])
 def listar_consultas():
     try:
-        conn = banco.get_connection()
+        conn = banco_oracle.get_connection()
         cursor = conn.cursor()
         cursor.execute("SELECT ID_CONSULTA, DT_HR_CONSULTA, DS_MODALIDADE FROM T_HC_CONSULTA ORDER BY ID_CONSULTA")
         consultas = [
@@ -135,7 +140,7 @@ def criar_consulta():
 
     print(">>> DADOS ENVIADOS PARA O BANCO:", dados)
 
-    resposta, status = banco.inserir_consulta(dados)
+    resposta, status = banco_oracle.inserir_consulta(dados)
     return jsonify(resposta), status
 
 
@@ -143,20 +148,20 @@ def criar_consulta():
 @app.route("/consultas/<id>", methods=["PUT"])
 def atualizar_consulta_endpoint(id):
     dados = request.get_json()
-    ok, resposta, status = banco.atualizar_consulta(id, dados)
+    ok, resposta, status = banco_oracle.atualizar_consulta(id, dados)
     return jsonify(resposta), status
 
 
 @app.route("/consultas/<id>", methods=["DELETE"])
 def deletar_consulta_endpoint(id):
-    ok, resposta, status = banco.deletar_consulta(id)
+    ok, resposta, status = banco_oracle.deletar_consulta(id)
     return jsonify(resposta), status
 
 
 @app.route("/exportar", methods=["GET"])
 def exportar_json():
     try:
-        relatorio = banco.exportar_dados_json()
+        relatorio = banco_oracle.exportar_dados_json()
         return jsonify({
             "mensagem": "Relatório gerado com sucesso!",
             "total_pacientes": relatorio["total_pacientes"]
