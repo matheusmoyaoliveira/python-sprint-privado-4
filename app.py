@@ -8,6 +8,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import gdown
 import joblib
+import pandas as pd
 
 # ------------------------------------------------------------
 # Seleciona o banco conforme o ambiente
@@ -193,20 +194,19 @@ def prever_comparecimento():
         file_id = "1YcOlIeY-aBSM7BKn1G64wg83xnHaM0Tk"
         output = "modelo_regressao.joblib"
 
+        
         if not os.path.exists(output):
             gdown.download(f"https://drive.google.com/uc?id={file_id}", output, quiet=False)
 
         modelo = joblib.load(output)
 
+        
         dados = request.json
 
-        # 🔹 Monta vetor com 13 colunas (3 reais + 10 zeros)
-        X = [[
-            dados.get("idade", 0),
-            dados.get("dias_espera", 0),
-            dados.get("historico_faltas", 0)
-        ] + [0]*10]  # ← completa com zeros
+    
+        X = pd.DataFrame([dados])
 
+        # 🔹 Faz predição
         if hasattr(modelo, "predict_proba"):
             probabilidade = modelo.predict_proba(X)[0][1] * 100
         else:
