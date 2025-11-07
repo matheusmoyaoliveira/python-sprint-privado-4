@@ -124,26 +124,51 @@ def deletar_consulta(id):
 # ------------------------------------------------------------
 # EXPORTAR (gera resumo consolidado)
 # ------------------------------------------------------------
+import json
+import statistics
+
 def exportar_dados_json():
     try:
+        
         with open('./data/pacientes.json', 'r', encoding='utf-8') as f:
             pacientes = json.load(f)
-        with open('./data/medicos.json', 'r', encoding='utf-8') as f:
-            medicos = json.load(f)
         with open('./data/consultas.json', 'r', encoding='utf-8') as f:
             consultas = json.load(f)
+        with open('./data/medicos.json', 'r', encoding='utf-8') as f:
+            medicos = json.load(f)
 
-        relatorio = {
-            "mensagem": "Relatório gerado com sucesso!",
+        exames = []
+
+        idades = [p.get('idade', 0) for p in pacientes if isinstance(p.get('idade', 0), (int, float))]
+        estatisticas = {
             "total_pacientes": len(pacientes),
-            "total_medicos": len(medicos),
             "total_consultas": len(consultas),
-            "pacientes": pacientes,
-            "medicos": medicos,
-            "consultas": consultas
+            "total_medicos": len(medicos),
+            "total_exames": len(exames),
+            "media_idade": round(statistics.mean(idades), 2) if idades else 0,
+            "idade_minima": min(idades) if idades else 0,
+            "idade_maxima": max(idades) if idades else 0
         }
 
-        return relatorio
+        
+        relatorio = {
+            "pacientes": pacientes,
+            "consultas": consultas,
+            "exames": exames,
+            "estatisticas": estatisticas
+        }
+
+        
+        with open('./relatorio_api.json', 'w', encoding='utf-8') as f:
+            json.dump(relatorio, f, ensure_ascii=False, indent=4)
+
+        return {
+            "mensagem": "Relatório gerado com sucesso!",
+            "arquivo": "relatorio_api.json",
+            **relatorio
+        }
+
     except Exception as e:
         return {"erro": str(e)}
+
 
