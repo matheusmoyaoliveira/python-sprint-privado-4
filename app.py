@@ -244,7 +244,8 @@ def prever_comparecimento():
 
         return jsonify({
             "mensagem": "Previsão gerada com sucesso!",
-            "probabilidade_comparecimento": f"{probabilidade:.2f}%"
+            "probabilidade_comparecimento": f"{probabilidade:.2f}%",
+            "interpretacao": "Alta chance de comparecimento" if probabilidade > 70 else "Risco de falta"
         })
 
     except Exception as e:
