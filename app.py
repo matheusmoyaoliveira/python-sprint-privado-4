@@ -3,9 +3,10 @@
 # Integrada ao banco Oracle e à API Java
 # ------------------------------------------------------------
 
-from flask import Flask, render_template, request, redirect, url_for, jsonify
-from flask_cors import CORS
 import banco
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+import json, requests
 import os
 
 banco.inserir_dados_iniciais()
