@@ -101,16 +101,20 @@ def inserir_paciente(dados):
 
 
 def atualizar_paciente(id_paciente, dados):
-    """Atualiza um paciente com validações e formatação de data."""
     nome = dados.get("nome", "").strip()
     cpf = dados.get("cpf", "").strip()
     rg = dados.get("rg", "").strip()
     altura = dados.get("altura", 0)
     peso = dados.get("peso", 0)
-    data_nasc = dados.get("dataNascimento", "").split(" ")[0]
+
+    # aceita os dois formatos (novo e antigo)
+    data_nasc = dados.get("data_nascimento") or dados.get("dataNascimento", "")
+    estado_civil = dados.get("estado_civil") or dados.get("estadoCivil", "")
     escolaridade = dados.get("escolaridade", "").strip()
-    estado_civil = dados.get("estadoCivil", "").strip()
     descricao = dados.get("descricao", "").strip()
+
+    data_nasc = data_nasc.split(" ")[0] if data_nasc else ""
+    estado_civil = estado_civil.strip()
 
     if not nome or len(nome) < 3:
         return False, {"erro": "Nome inválido."}, 400
@@ -124,11 +128,10 @@ def atualizar_paciente(id_paciente, dados):
         if data_obj > date.today():
             return False, {"erro": "Data de nascimento inválida (futura)."}, 400
     except:
-        return False, {"erro": "Formato de data inválido."}, 400
+        return False, {"erro": "Formato de data inválido (use YYYY-MM-DD)."}, 400
 
     conn = get_connection()
     cursor = conn.cursor()
-
     cursor.execute("SELECT COUNT(*) FROM T_HC_PACIENTE WHERE TRIM(ID_PACIENTE) = :1", [str(id_paciente)])
     if cursor.fetchone()[0] == 0:
         cursor.close()
@@ -137,12 +140,17 @@ def atualizar_paciente(id_paciente, dados):
 
     cursor.execute("""
         UPDATE T_HC_PACIENTE
-        SET NM_PACIENTE = :1, NR_CPF = :2, NR_RG = :3, NR_ALTURA = :4,
-            NR_PESO = :5, DT_NASCIMENTO = TO_DATE(:6, 'YYYY-MM-DD'),
-            DS_ESCOLARIDADE = :7, DS_ESTADO_CIVIL = :8, DS_DESCRICAO = :9
-        WHERE TRIM(ID_PACIENTE) = :10
+           SET NM_PACIENTE = :1,
+               NR_CPF = :2,
+               NR_RG = :3,
+               NR_ALTURA = :4,
+               NR_PESO = :5,
+               DT_NASCIMENTO = TO_DATE(:6, 'YYYY-MM-DD'),
+               DS_ESCOLARIDADE = :7,
+               DS_ESTADO_CIVIL = :8,
+               DS_DESCRICAO = :9
+         WHERE TRIM(ID_PACIENTE) = :10
     """, (nome, cpf, rg, altura, peso, data_nasc, escolaridade, estado_civil, descricao, str(id_paciente)))
-
     conn.commit()
     cursor.close()
     conn.close()
@@ -313,83 +321,79 @@ def remover_medico(id_medico):
     return apagou
 
 
+def inserir_paciente(dados):
+    try:
+        print("📩 DADOS RECEBIDOS PARA INSERÇÃO:", dados)
+        nome = dados.get("nome", "").strip()
+        cpf = dados.get("cpf", "").strip()
+        rg = dados.get("rg", "").strip()
+        altura = dados.get("altura", 0)
+        peso = dados.get("peso", 0)
+        data_nasc = dados.get("data_nascimento") or dados.get("dataNascimento", "")
+        estado_civil = dados.get("estado_civil") or dados.get("estadoCivil", "")
+        escolaridade = dados.get("escolaridade", "").strip()
+        descricao = dados.get("descricao", "").strip()
+
+        data_nasc = data_nasc.split(" ")[0] if data_nasc else ""
+        estado_civil = estado_civil.strip()
+
+        # (demais validações e INSERT aqui...)
+
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT INTO T_HC_PACIENTE
+            (ID_PACIENTE, NM_PACIENTE, NR_CPF, NR_RG, NR_ALTURA, NR_PESO,
+             DT_NASCIMENTO, DS_ESCOLARIDADE, DS_ESTADO_CIVIL, DS_DESCRICAO)
+            VALUES (TO_CHAR(SQ_T_HC_PACIENTE.NEXTVAL), :1, :2, :3, :4, :5,
+                    TO_DATE(:6, 'YYYY-MM-DD'), :7, :8, :9)
+        """, (nome, cpf, rg, altura, peso, data_nasc, escolaridade, estado_civil, descricao))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return {"mensagem": "Paciente cadastrado com sucesso!"}, 201
+
+    except Exception as e:
+        print("❌ ERRO EM inserir_paciente:", e)
+        return {"erro": f"Falha ao inserir paciente: {e}"}, 500
+
+
 def inserir_consulta(dados):
-    """Insere uma nova consulta com validações de data, paciente e médico."""
-    data_hora = dados.get("dataHora", "").split(" ")[0]
-    modalidade = dados.get("modalidade", "").strip().capitalize()
-    id_paciente = dados.get("idPaciente")
-    id_medico = dados.get("idMedico")
-
-    
-    if modalidade not in ["Presencial", "Online"]:
-        return {"erro": "Modalidade inválida. Use 'Presencial' ou 'Online'."}, 400
-
-    
+    """Insere uma nova consulta (apenas data/hora e modalidade)."""
     try:
-        data_obj = datetime.strptime(data_hora, "%Y-%m-%d").date()
-        if data_obj < date.today():
-            return {"erro": "A data da consulta deve ser futura."}, 400
-    except:
-        return {"erro": "Formato de data inválido. Use YYYY-MM-DD."}, 400
+        conn = get_connection()
+        cursor = conn.cursor()
 
-    
-    conn = get_connection()
-    cursor = conn.cursor()
+        data_hora = dados.get("dataHora", "")
+        modalidade = dados.get("modalidade", "").strip().capitalize()
 
-    cursor.execute("SELECT COUNT(*) FROM T_HC_PACIENTE WHERE TRIM(ID_PACIENTE) = :1", [str(id_paciente)])
-    if cursor.fetchone()[0] == 0:
+        if not data_hora or not modalidade:
+            return {"erro": "Campos obrigatórios ausentes."}, 400
+
+        # Inserir apenas os dois campos
+        cursor.execute("""
+            INSERT INTO T_HC_CONSULTA
+            (ID_CONSULTA, DT_HR_CONSULTA, DS_MODALIDADE)
+            VALUES (
+                TO_CHAR(SQ_T_HC_CONSULTA.NEXTVAL),
+                TO_DATE(:1, 'YYYY-MM-DD HH24:MI:SS'),
+                :2
+            )
+        """, (data_hora, modalidade))
+
+        conn.commit()
         cursor.close()
         conn.close()
-        return {"erro": "Paciente não encontrado."}, 404
+        return {"mensagem": "Consulta cadastrada com sucesso!"}, 201
 
-    cursor.execute("SELECT COUNT(*) FROM T_HC_MEDICO WHERE TRIM(ID_MEDICO) = :1", [str(id_medico)])
-    if cursor.fetchone()[0] == 0:
-        cursor.close()
-        conn.close()
-        return {"erro": "Médico não encontrado."}, 404
-
-    
-    cursor.execute("""
-        INSERT INTO T_HC_CONSULTA (ID_CONSULTA, DT_HR_CONSULTA, DS_MODALIDADE)
-        VALUES (TO_CHAR(SQ_T_HC_CONSULTA.NEXTVAL), TO_DATE(:1, 'YYYY-MM-DD'), :2)
-    """, (data_hora, modalidade))
-    conn.commit()
-    cursor.close()
-    conn.close()
-    return {"mensagem": "Consulta cadastrada com sucesso!"}, 201
-
-
-def atualizar_consulta(id_consulta, dados):
-    """Atualiza uma consulta com validações."""
-    data_hora = dados.get("dataHora", "").split(" ")[0]
-    modalidade = dados.get("modalidade", "").strip().capitalize()
-
-    if modalidade not in ["Presencial", "Online"]:
-        return False, {"erro": "Modalidade inválida. Use 'Presencial' ou 'Online'."}, 400
-    try:
-        data_obj = datetime.strptime(data_hora, "%Y-%m-%d").date()
-        if data_obj < date.today():
-            return False, {"erro": "A data da consulta deve ser futura."}, 400
-    except:
-        return False, {"erro": "Formato de data inválido."}, 400
-
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT COUNT(*) FROM T_HC_CONSULTA WHERE TRIM(ID_CONSULTA) = :1", [str(id_consulta)])
-    if cursor.fetchone()[0] == 0:
-        cursor.close()
-        conn.close()
-        return False, {"erro": "Consulta não encontrada."}, 404
-
-    cursor.execute("""
-        UPDATE T_HC_CONSULTA
-        SET DT_HR_CONSULTA = TO_DATE(:1, 'YYYY-MM-DD'), DS_MODALIDADE = :2
-        WHERE TRIM(ID_CONSULTA) = :3
-    """, (data_hora, modalidade, str(id_consulta)))
-    conn.commit()
-    cursor.close()
-    conn.close()
-    return True, {"mensagem": "Consulta atualizada com sucesso!"}, 200
+    except Exception as e:
+        if "cursor" in locals():
+            cursor.close()
+        if "conn" in locals():
+            conn.rollback()
+            conn.close()
+        print("❌ ERRO AO INSERIR CONSULTA:", e)
+        return {"erro": f"Erro ao inserir consulta: {e}"}, 500
 
 
 def deletar_consulta(id_consulta):

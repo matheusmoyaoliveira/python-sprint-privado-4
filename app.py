@@ -3,7 +3,7 @@
 # Integrada ao banco Oracle e à API Java
 # ------------------------------------------------------------
 
-from flask import Flask, jsonify, request
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_cors import CORS
 import banco
 import ml_predict
@@ -77,7 +77,7 @@ def deletar_paciente(id):
         return "", 204
     else:
         return jsonify({"erro": "Paciente não encontrado"}), 404
-
+    
 
 @app.route("/medicos", methods=["GET"])
 def listar_medicos_endpoint():
@@ -133,9 +133,20 @@ def listar_consultas():
 
 @app.route("/consultas", methods=["POST"])
 def criar_consulta():
-    dados = request.get_json()
+    dados = request.get_json() or {}
+
+    if "dataHora" in dados:
+        dados["dataHora"] = (
+            dados["dataHora"].replace("T", " ").split(".")[0].strip()
+        )
+        if len(dados["dataHora"].split(":")) == 2:
+            dados["dataHora"] += ":00"
+
+    print(">>> DADOS ENVIADOS PARA O BANCO:", dados)
+
     resposta, status = banco.inserir_consulta(dados)
     return jsonify(resposta), status
+
 
 
 @app.route("/consultas/<id>", methods=["PUT"])
@@ -161,17 +172,6 @@ def exportar_json():
         }), 200
     except Exception as e:
         return jsonify({"erro": str(e)}), 500
-    
-
-@app.route("/predict/schema", methods=["GET"])
-def predict_schema():
-    return jsonify({"schema": ml_predict.schema_esperado()})
-
-
-@app.route("/predict", methods=["POST"])
-def predict():
-    dados = request.get_json()
-    return jsonify(ml_predict.prever_probabilidade(dados))
 
 
 if __name__ == "__main__":

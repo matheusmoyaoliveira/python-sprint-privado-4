@@ -1,32 +1,95 @@
 {% extends "base.html" %}
 {% block title %}Médicos - NeuroAI{% endblock %}
-
 {% block content %}
-<h1>Lista de Médicos</h1>
 
-<form action="/medicos/adicionar" method="post">
-    <input type="text" name="nome" placeholder="Nome" required>
-    <input type="text" name="crm" placeholder="CRM (ex: CRM-12345)" required>
-    <input type="text" name="especialidade" placeholder="Especialidade" required>
-    <input type="text" name="email" placeholder="E-mail" required>
-    <input type="text" name="telefone" placeholder="Telefone" required>
-    <button type="submit">Adicionar Médico</button>
-</form>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/medicos.css') }}">
+<script defer src="{{ url_for('static', filename='js/medico.js') }}"></script>
 
-<table>
-    <tr>
-        <th>ID</th><th>Nome</th><th>CRM</th><th>Especialidade</th><th>Email</th><th>Telefone</th><th>Ações</th>
-    </tr>
-    {% for m in medicos %}
-    <tr>
-        <td>{{ m.id }}</td>
-        <td>{{ m.nome }}</td>
-        <td>{{ m.crm }}</td>
-        <td>{{ m.especialidade }}</td>
-        <td>{{ m.email }}</td>
-        <td>{{ m.telefone }}</td>
-        <td><a href="/medicos/deletar/{{ m.id }}" onclick="return confirmarExclusao()">Excluir</a></td>
-    </tr>
-    {% endfor %}
-</table>
+<section class="page-header">
+  <h1>Gerenciamento de Médicos <span class="emoji">🩺</span></h1>
+  <button id="btnNovoMedico" class="btn btn-primary" type="button">+ Adicionar Médico</button>
+</section>
+
+<div class="card-table">
+  <table id="tbl-medicos" class="tbl">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>CRM</th>
+        <th>Especialidade</th>
+        <th>Telefone</th>
+        <th>E-mail</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if medicos and medicos|length > 0 %}
+        {% for m in medicos %}
+        <tr data-id="{{ m.id }}"
+            data-nome="{{ m.nome }}"
+            data-crm="{{ m.crm }}"
+            data-especialidade="{{ m.especialidade }}"
+            data-telefone="{{ m.telefone }}"
+            data-email="{{ m.email }}">
+          <td>{{ m.id }}</td>
+          <td>{{ m.nome }}</td>
+          <td>{{ m.crm }}</td>
+          <td>{{ m.especialidade }}</td>
+          <td>{{ m.telefone }}</td>
+          <td>{{ m.email }}</td>
+          <td>
+            <button class="btn btn-sm btnEditar" title="Editar">✎</button>
+            <button class="btn btn-sm btnExcluir" title="Excluir" data-id="{{ m.id }}">🗑</button>
+          </td>
+        </tr>
+        {% endfor %}
+      {% else %}
+        <tr><td colspan="7" class="empty-message">Nenhum médico cadastrado.</td></tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal -->
+<div id="modalMedico" class="modal" aria-hidden="true">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2 id="modalTitulo">Novo Médico</h2>
+      <button id="modalClose" class="modal-close" type="button">✕</button>
+    </div>
+
+    <form id="formMedico">
+      <input type="hidden" id="m_id">
+      <div class="grid two">
+        <div class="form-control">
+          <label>Nome</label>
+          <input id="m_nome" name="nome" required>
+        </div>
+        <div class="form-control">
+          <label>CRM</label>
+          <input id="m_crm" name="crm" required placeholder="CRM-12345">
+        </div>
+        <div class="form-control">
+          <label>Especialidade</label>
+          <input id="m_espec" name="especialidade">
+        </div>
+        <div class="form-control">
+          <label>Telefone</label>
+          <input id="m_tel" name="telefone">
+        </div>
+        <div class="form-control">
+          <label>E-mail</label>
+          <input id="m_email" name="email" type="email">
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" id="m_cancelar" class="btn btn-secondary">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 {% endblock %}

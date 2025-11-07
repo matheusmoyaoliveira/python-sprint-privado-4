@@ -1,5 +1,5 @@
 /* =========================================================
-   NEUROAI — PACIENTES PAGE (com visual em cards)
+   NEUROAI — PACIENTES PAGE (visual em cards, ajustado)
    ========================================================= */
 
 main {
@@ -56,7 +56,7 @@ form input:focus {
   background-color: #fff;
 }
 
-/* Botão principal */
+/* Botão principal (Adicionar Paciente) */
 form button {
   display: block;
   margin: 25px auto 0 auto;
@@ -104,7 +104,7 @@ form button:hover {
   border-color: #d7e4ff;
 }
 
-/* Cabeçalho */
+/* Cabeçalho do Card */
 .card-header {
   display: flex;
   align-items: center;
@@ -130,7 +130,7 @@ form button:hover {
   font-weight: 600;
 }
 
-/* Conteúdo */
+/* Conteúdo do Card */
 .card-content p {
   margin: 6px 0;
   font-size: 15px;
@@ -142,33 +142,157 @@ form button:hover {
   font-weight: 600;
 }
 
-/* Ações */
+/* ---------- Ações (Editar e Excluir refinadas) ---------- */
 .card-actions {
-  margin-top: 18px;
+  margin-top: 20px;
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
 }
 
-.card-actions a {
-  background-color: #f8d7da;
-  color: #b02a37;
-  padding: 8px 16px;
+/* Estilo base dos botões */
+.card-actions button {
+  min-width: 110px;
+  padding: 10px 0;
+  border: none;
   border-radius: 8px;
   font-weight: 600;
   font-size: 14px;
-  text-decoration: none;
+  cursor: pointer;
   transition: all 0.25s ease;
-  box-shadow: 0 2px 6px rgba(176, 42, 55, 0.2);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-.card-actions a:hover {
+/* Botão Editar */
+.card-actions .btn-edit {
+  background-color: #eef4ff;
+  color: #0d6efd;
+}
+
+.card-actions .btn-edit:hover {
+  background-color: #0d6efd;
+  color: #fff;
+  box-shadow: 0 6px 14px rgba(13, 110, 253, 0.25);
+  transform: translateY(-2px);
+}
+
+/* Botão Excluir */
+.card-actions .btn-delete {
+  background-color: #ffeaea;
+  color: #b02a37;
+}
+
+.card-actions .btn-delete:hover {
+  background-color: #b02a37;
+  color: #fff;
+  box-shadow: 0 6px 14px rgba(176, 42, 55, 0.25);
+  transform: translateY(-2px);
+}
+
+/* Animação suave no clique */
+.card-actions button:active {
+  transform: scale(0.97);
+}
+
+/* ---------- Ajustes visuais extras ---------- */
+.card-paciente {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-paciente::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, #0d6efd, #00aaff);
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+}
+
+/* Botão Editar */
+.card-actions .btn-edit {
+  background-color: #e9f2ff;
+  color: #0d6efd;
+}
+
+.card-actions .btn-edit:hover {
+  background-color: #0d6efd;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(13, 110, 253, 0.25);
+}
+
+/* Botão Excluir */
+.card-actions .btn-delete {
+  background-color: #f8d7da;
+  color: #b02a37;
+}
+
+.card-actions .btn-delete:hover {
   background-color: #b02a37;
   color: #fff;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(176, 42, 55, 0.4);
+  box-shadow: 0 4px 12px rgba(176, 42, 55, 0.35);
 }
 
-/* Mensagem vazia */
+/* ---------- Formulário de Edição ---------- */
+.form-editar {
+  margin-top: 15px;
+  background-color: #f9fbff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.1);
+}
+
+.form-editar input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+}
+
+.btn-salvar {
+  background-color: #198754;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn-salvar:hover {
+  background-color: #157347;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(25, 135, 84, 0.3);
+}
+
+.btn-cancelar {
+  background-color: #f8d7da;
+  color: #b02a37;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 8px;
+  transition: all 0.25s ease;
+}
+
+.btn-cancelar:hover {
+  background-color: #b02a37;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(176, 42, 55, 0.35);
+}
+
+/* ---------- Mensagem vazia ---------- */
 .empty-message {
   text-align: center;
   padding: 30px 10px;
@@ -192,4 +316,69 @@ form button:hover {
   .card-content p {
     font-size: 14px;
   }
+
+  .card-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .card-actions button {
+    width: 100%;
+  }
 }
+
+.card-actions form {
+  background: transparent !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  width: auto !important;
+  max-width: none !important;
+  margin: 0 !important;
+  display: inline; /* mantém o layout na mesma linha */
+}
+
+/* Area de ações bonita, central e compacta */
+.card-actions {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Botões harmonizados */
+.card-actions button {
+  min-width: 112px;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform .2s ease, box-shadow .2s ease, background-color .2s ease, color .2s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,.08);
+}
+
+.card-actions .btn-edit {
+  background-color: #eef4ff;
+  color: #0d6efd;
+}
+.card-actions .btn-edit:hover {
+  background-color: #0d6efd;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(13,110,253,.25);
+}
+
+.card-actions .btn-delete {
+  background-color: #ffeaea;
+  color: #b02a37;
+}
+.card-actions .btn-delete:hover {
+  background-color: #b02a37;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(176,42,55,.25);
+}
+

@@ -4,15 +4,16 @@
 {% block content %}
 <h1>Gerenciamento de Pacientes</h1>
 
-<form action="/pacientes/adicionar" method="post">
+<!-- Formulário de Adição -->
+<form action="{{ url_for('pacientes_novo') }}" method="POST">
   <input type="text" name="nome" placeholder="Nome" required>
   <input type="text" name="cpf" placeholder="CPF" required>
   <input type="text" name="rg" placeholder="RG">
   <input type="text" name="altura" placeholder="Altura (m)">
   <input type="text" name="peso" placeholder="Peso (kg)">
-  <input type="date" name="dataNascimento" required>
+  <input type="date" name="data_nascimento" required>
   <input type="text" name="escolaridade" placeholder="Escolaridade">
-  <input type="text" name="estadoCivil" placeholder="Estado Civil">
+  <input type="text" name="estado_civil" placeholder="Estado Civil">
   <input type="text" name="descricao" placeholder="Descrição">
   <button type="submit">Adicionar Paciente</button>
 </form>
@@ -36,12 +37,48 @@
       <p><strong>Estado Civil:</strong> {{ p.estadoCivil }}</p>
       <p><strong>Descrição:</strong> {{ p.descricao }}</p>
     </div>
+
     <div class="card-actions">
-      <a href="/pacientes/deletar/{{ p.id }}" onclick="return confirmarExclusao()">Excluir</a>
+      <!-- Botão Editar -->
+      <button type="button" class="btn-edit" onclick="abrirEdicao('{{ p.id }}')">Editar</button>
+
+      <!-- Form Excluir -->
+      <form action="{{ url_for('pacientes_excluir', pid=p.id) }}" method="POST" onsubmit="return confirmarExclusao();">
+        <button type="submit">Excluir</button>
+      </form>
     </div>
+
+    <!-- Form de Edição (oculto até clicar em Editar) -->
+    <form id="form-editar-{{ p.id }}" class="form-editar" action="{{ url_for('pacientes_editar', pid=p.id) }}" method="POST" style="display:none;">
+      <input type="text" name="nome" value="{{ p.nome }}" required>
+      <input type="text" name="cpf" value="{{ p.cpf }}" required>
+      <input type="text" name="rg" value="{{ p.rg }}">
+      <input type="text" name="altura" value="{{ p.altura }}">
+      <input type="text" name="peso" value="{{ p.peso }}">
+      <input type="date" name="data_nascimento" value="{{ p.dataNascimento }}">
+      <input type="text" name="escolaridade" value="{{ p.escolaridade }}">
+      <input type="text" name="estado_civil" value="{{ p.estadoCivil }}">
+      <input type="text" name="descricao" value="{{ p.descricao }}">
+      <button type="submit" class="btn-salvar">Salvar</button>
+      <button type="button" class="btn-cancelar" onclick="fecharEdicao('{{ p.id }}')">Cancelar</button>
+    </form>
   </div>
   {% else %}
   <p class="empty-message">Nenhum paciente cadastrado.</p>
   {% endfor %}
 </section>
+
+<script>
+function confirmarExclusao() {
+  return confirm("Tem certeza que deseja excluir este paciente?");
+}
+
+function abrirEdicao(id) {
+  document.getElementById("form-editar-" + id).style.display = "block";
+}
+
+function fecharEdicao(id) {
+  document.getElementById("form-editar-" + id).style.display = "none";
+}
+</script>
 {% endblock %}
