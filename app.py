@@ -179,10 +179,7 @@ def deletar_consulta_endpoint(id):
 def exportar_json():
     try:
         relatorio = banco.exportar_dados_json()
-        return jsonify({
-            "mensagem": "Relatório gerado com sucesso!",
-            "total_pacientes": relatorio.get("total_pacientes", 0)
-        }), 200
+        return jsonify(relatorio), 200
     except Exception as e:
         return jsonify({"erro": str(e)}), 500
 
@@ -193,26 +190,23 @@ def exportar_json():
 @app.route('/predict', methods=['POST'])
 def prever_comparecimento():
     try:
-        # 🔹 ID do arquivo do Google Drive (pegamos da URL que você mandou)
         file_id = "1YcOlIeY-aBSM7BKn1G64wg83xnHaM0Tk"
         output = "modelo_regressao.joblib"
 
-        # 🔹 Só baixa o modelo se ainda não existir no servidor (Render)
         if not os.path.exists(output):
             gdown.download(f"https://drive.google.com/uc?id={file_id}", output, quiet=False)
 
-        # 🔹 Carrega o modelo
         modelo = joblib.load(output)
 
-        # 🔹 Lê os dados enviados no JSON (exemplo: {"idade": 40, "dias_espera": 15, "historico_faltas": 1})
         dados = request.json
+
+        # 🔹 Monta vetor com 13 colunas (3 reais + 10 zeros)
         X = [[
             dados.get("idade", 0),
             dados.get("dias_espera", 0),
             dados.get("historico_faltas", 0)
-        ]]
+        ] + [0]*10]  # ← completa com zeros
 
-        # 🔹 Faz a previsão (supondo que o modelo seja de classificação com predict_proba)
         if hasattr(modelo, "predict_proba"):
             probabilidade = modelo.predict_proba(X)[0][1] * 100
         else:
@@ -225,10 +219,3 @@ def prever_comparecimento():
 
     except Exception as e:
         return jsonify({"erro": str(e)}), 500
-
-# ------------------------------------------------------------
-# EXECUÇÃO
-# ------------------------------------------------------------
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=True)
