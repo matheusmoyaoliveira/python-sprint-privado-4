@@ -13,15 +13,18 @@
   <section class="form-section">
     <h2>Agendar Nova Consulta</h2>
     <form id="formConsulta" class="form-modern">
+
+      <!-- 🔽 Aqui substituímos o campo original de dataHora pelas DUAS LINHAS novas -->
       <div class="form-group">
         <label for="data">Data</label>
-        <input type="date" id="data" required>
+        <input type="date" id="data">
       </div>
 
       <div class="form-group">
         <label for="hora">Hora</label>
-        <input type="time" id="hora" required>
+        <input type="time" id="hora">
       </div>
+      <!-- 🔼 Fim da substituição -->
 
       <div class="form-group">
         <label for="modalidade">Modalidade</label>
@@ -33,12 +36,12 @@
 
       <div class="form-group">
         <label for="idPaciente">ID do Paciente</label>
-        <input type="number" id="idPaciente" placeholder="Ex: 1" required>
+        <input type="number" id="idPaciente" placeholder="Ex: 1">
       </div>
 
       <div class="form-group">
         <label for="idMedico">ID do Médico</label>
-        <input type="number" id="idMedico" placeholder="Ex: 2" required>
+        <input type="number" id="idMedico" placeholder="Ex: 2">
       </div>
 
       <button type="submit" class="btn btn-primary center-btn">Agendar Consulta</button>
