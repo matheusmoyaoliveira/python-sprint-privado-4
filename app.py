@@ -376,8 +376,8 @@ def exportar_view():
 def prever_comparecimento():
     try:
         # Modelo (baixa 1x se não existir)
-        file_id = "1yC0lIeY-aBSM7BkIn1G64wg83xnHaM0Tk"
-        output = "modelo_regressao.joblib"
+        file_id = "1bk23VYDqdX8xcEapO1NHCpZmjHwu4FvX"
+        output = "regressao.joblib"
         if not os.path.exists(output):
             gdown.download(f"https://drive.google.com/uc?id={file_id}", output, quiet=False)
 
@@ -397,7 +397,6 @@ def prever_comparecimento():
 
         payload = {
             "scholarship":   to_int(data.get("scholarship")),
-            # neighbourhood deve ser numérico. Se vier string, zera.
             "neighbourhood": to_int(data.get("neighbourhood"), 0),
             "gender":        to_int(data.get("gender")),        # 0/1
             "age":           to_int(data.get("age")),
@@ -412,7 +411,7 @@ def prever_comparecimento():
             "diabetes":      to_int(data.get("diabetes")),      # 0/1
         }
 
-        # Validação de colunas
+        
         colunas = [
             "scholarship","neighbourhood","gender","age","appt_dow","handcap",
             "waiting_days","hipertension","sms_received","alcoholism",
@@ -424,7 +423,7 @@ def prever_comparecimento():
 
         X = pd.DataFrame([payload])
 
-        # Previsão
+        
         if hasattr(modelo, "predict_proba"):
             prob = float(modelo.predict_proba(X)[0][1]) * 100.0
         else:
@@ -435,8 +434,8 @@ def prever_comparecimento():
 
         return jsonify({
             "mensagem": "Previsão gerada com sucesso!",
-            "probabilidade": prob,            # número (ex.: 76.34)
-            "probabilidade_str": f"{prob}%", # string pronta
+            "probabilidade": prob,            
+            "probabilidade_str": f"{prob}%", 
             "interpretacao": interpretacao
         })
     except Exception as e:
