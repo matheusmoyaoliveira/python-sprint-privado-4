@@ -23,7 +23,7 @@ else:
 # ------------------------------------------------------------
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = "neuroai-front-secret"
-CORS(app)
+CORS(app, resources={r"/*": {"origins": ["http://127.0.0.1:5000", "http://localhost:5000"]}})
 
 
 # ------------------------------------------------------------
@@ -120,12 +120,12 @@ pacientes_json = [
     {"id": 1, "nome": "João da Silva", "idade": 45, "cpf": "123.456.789-00", "telefone": "(11) 98888-1111"}
 ]
 
-@app.route("/api/pacientes", methods=["GET"])
+@app.route("/pacientes", methods=["GET"])
 def api_listar_pacientes():
     """Retorna todos os pacientes em formato JSON"""
     return jsonify(pacientes_json)
 
-@app.route("/api/pacientes", methods=["POST"])
+@app.route("/pacientes", methods=["POST"])
 def api_criar_paciente():
     """Cria novo paciente via JSON"""
     data = request.get_json()
@@ -139,7 +139,7 @@ def api_criar_paciente():
     pacientes_json.append(novo)
     return jsonify(novo), 201
 
-@app.route("/api/pacientes/<int:id>", methods=["DELETE"])
+@app.route("/pacientes/<int:id>", methods=["DELETE"])
 def api_excluir_paciente(id):
     """Exclui paciente via JSON"""
     global pacientes_json
