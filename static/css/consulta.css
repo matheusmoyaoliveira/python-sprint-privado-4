@@ -287,23 +287,3 @@
 .btn-edit:hover {
   background: #d68910;
 }
-
-.form-modern select {
-  width: 100%;
-  padding: 10px 15px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-  font-size: 14px;
-  color: #333;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  outline: none;
-  appearance: none;
-}
-
-/* Efeito ao focar no campo */
-.form-modern select:focus {
-  border-color: #00b894;
-  box-shadow: 0 0 4px rgba(0, 184, 148, 0.4);
-  background-color: #fff;
-}
