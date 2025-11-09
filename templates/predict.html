@@ -9,10 +9,11 @@
   <p>Preencha os dados abaixo para estimar a probabilidade de comparecimento do paciente.</p>
 </section>
 
-<form method="POST" action="{{ url_for('prever_comparecimento') }}" class="form-predict">
+
+<form method="POST" class="form-predict">
   <div class="form-grid">
     <div>
-      <label>Bolsa Escolar (Scholarship):</label>
+      <label>Bolsa Escolar:</label>
       <select name="scholarship" required>
         <option value="0">Não</option>
         <option value="1">Sim</option>
@@ -20,8 +21,17 @@
     </div>
 
     <div>
-      <label>Bairro (Neighbourhood):</label>
-      <input type="text" name="neighbourhood" placeholder="Ex: JARDIM DA PENHA" required>
+      <label>Bairro:</label>
+      <select name="neighbourhood" required>
+        <option value="JARDIM DA PENHA">Jardim da Penha</option>
+        <option value="ITARARÉ">Itararé</option>
+        <option value="MARUÍPE">Maruípe</option>
+        <option value="CENTRO">Centro</option>
+        <option value="SANTA LÚCIA">Santa Lúcia</option>
+        <option value="ILHA DO PRÍNCIPE">Ilha do Príncipe</option>
+        <option value="JESUS DE NAZARÉ">Jesus de Nazaré</option>
+        <option value="SANTO ANTÔNIO">Santo Antônio</option>
+      </select>
     </div>
 
     <div>
@@ -38,12 +48,12 @@
     </div>
 
     <div>
-      <label>Dia da Semana da Consulta (appt_dow):</label>
+      <label>Dia da Semana da Consulta:</label>
       <input type="number" name="appt_dow" min="0" max="6" required>
     </div>
 
     <div>
-      <label>Deficiência (handcap):</label>
+      <label>Deficiência:</label>
       <select name="handcap" required>
         <option value="0">Nenhuma</option>
         <option value="1">Leve</option>
@@ -54,7 +64,7 @@
     </div>
 
     <div>
-      <label>Tempo de Espera (waiting_days):</label>
+      <label>Tempo de Espera:</label>
       <input type="number" name="waiting_days" min="0" required>
     </div>
 
@@ -91,7 +101,7 @@
     </div>
 
     <div>
-      <label>Hora Agendada (0–23):</label>
+      <label>Hora Agendada:</label>
       <input type="number" name="sched_hour" min="0" max="23" required>
     </div>
 
@@ -106,6 +116,7 @@
 
   <button type="submit" class="btn btn-success">Calcular Probabilidade</button>
 </form>
+
 
 <script defer src="{{ url_for('static', filename='js/predict.js') }}"></script>
 
