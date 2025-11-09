@@ -5,29 +5,38 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/medico.css') }}">
 <script defer src="{{ url_for('static', filename='js/medico.js') }}"></script>
 
-<section class="page-header">
-  <h1>🩺 Gerenciamento de Médicos</h1>
-</section>
+<div class="page-medicos">
+  <section class="page-header">
+    <h1>🩺 Gerenciamento de Médicos</h1>
+  </section>
 
-<section class="form-section">
-  <h2>Adicionar Novo Médico</h2>
-  <form id="formMedico" class="form-medico">
-    <label for="nome">Nome do Médico</label>
-    <input type="text" id="nome" placeholder="Ex: Dr. João Almeida Jr.">
+  <section class="form-section">
+    <h2>Adicionar Novo Médico</h2>
 
-    <label for="crm">CRM</label>
-    <input type="text" id="crm" placeholder="Ex: 12345">
+    <form id="formMedico" class="form-modern">
+      <div class="form-group">
+        <label for="nome">Nome do Médico</label>
+        <input type="text" id="nome" placeholder="Ex: Dr. João Almeida Jr.">
+      </div>
 
-    <label for="especialidade">Especialidade</label>
-    <input type="text" id="especialidade" placeholder="Ex: Cardiologia">
+      <div class="form-group">
+        <label for="crm">CRM</label>
+        <input type="text" id="crm" placeholder="Ex: 12345">
+      </div>
 
-    <button type="submit" class="btn btn-primary">+ Adicionar Médico</button>
-  </form>
-</section>
+      <div class="form-group">
+        <label for="especialidade">Especialidade</label>
+        <input type="text" id="especialidade" placeholder="Ex: Cardiologia">
+      </div>
 
-<section class="list-section">
-  <h2>Médicos Cadastrados</h2>
-  <div id="listaMedicos" class="card-container"></div>
-</section>
+      <button type="submit" class="btn btn-primary">+ Adicionar Médico</button>
+    </form>
+  </section>
+
+  <section class="cards-list">
+    <h2>Médicos Cadastrados</h2>
+    <div id="listaMedicos" class="cards-container"></div>
+  </section>
+</div>
 
 {% endblock %}

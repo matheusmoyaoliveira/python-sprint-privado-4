@@ -26,19 +26,22 @@ async function carregarMedicos() {
 
     medicos.forEach((m) => {
       const card = document.createElement("div");
-      card.classList.add("card");
-
-      card.innerHTML = `
-        <div class="card-header">${m.nome}</div>
+      card.classList.add("card-medico");
+        card.innerHTML = `
+        <div class="card-header">
+            <h3>${m.nome}</h3>
+            <p class="small">ID #${m.id}</p>
+        </div>
         <div class="card-body">
-          <p><strong>CRM:</strong> ${m.crm}</p>
-          <p><strong>Especialidade:</strong> ${m.especialidade}</p>
+            <p><strong>CRM:</strong> ${m.crm}</p>
+            <p><strong>Especialidade:</strong> ${m.especialidade}</p>
         </div>
-        <div class="card-actions">
-          <button class="btn-excluir" onclick="excluirMedico(${m.id})">Excluir</button>
-          <button class="btn-editar" onclick="editarMedico(${m.id})">Editar</button>
+        <div class="card-footer">
+            <button class="btn-delete" onclick="excluirMedico(${m.id})">Excluir</button>
+            <button class="btn-edit" onclick="editarMedico(${m.id})">Editar</button>
         </div>
-      `;
+        `;
+
 
       container.appendChild(card);
     });
