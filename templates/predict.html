@@ -2,12 +2,14 @@
 {% block title %}Prever Comparecimento - NeuroAI{% endblock %}
 {% block content %}
 
+<link rel="stylesheet" href="{{ url_for('static', filename='css/predict.css') }}">
+
 <section class="page-header">
   <h1>🔮 Previsão de Comparecimento</h1>
   <p>Preencha os dados abaixo para estimar a probabilidade de comparecimento do paciente.</p>
 </section>
 
-<form method="POST" action="{{ url_for('prever_comparecimento') }}">
+<form method="POST" action="{{ url_for('prever_comparecimento') }}" class="form-predict">
   <div class="form-grid">
     <div>
       <label>Bolsa Escolar (Scholarship):</label>
