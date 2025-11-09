@@ -4,6 +4,21 @@ const API_URL = "https://python-sprint-privado-4.onrender.com/api/consultas";
 const form = document.getElementById("formConsulta");
 const container = document.getElementById("listaConsultas");
 
+// ================== FORMATAÇÃO DE DATA ==================
+function formatarData(dataISO) {
+  try {
+    const data = new Date(dataISO);
+    const dia = String(data.getDate()).padStart(2, "0");
+    const mes = String(data.getMonth() + 1).padStart(2, "0");
+    const ano = data.getFullYear();
+    const hora = String(data.getHours()).padStart(2, "0");
+    const min = String(data.getMinutes()).padStart(2, "0");
+    return `${dia}/${mes}/${ano} ${hora}:${min}`;
+  } catch {
+    return dataISO;
+  }
+}
+
 // ================== CARREGAR CONSULTAS (GET) ==================
 async function carregarConsultas() {
   try {
@@ -27,7 +42,7 @@ async function carregarConsultas() {
           <h3>Consulta #${c.id}</h3>
         </div>
         <div class="card-body">
-          <p><strong>Data/Hora:</strong> ${c.dataHora}</p>
+          <p><strong>Data/Hora:</strong> ${formatarData(c.dataHora)}</p>
           <p><strong>Modalidade:</strong> ${c.modalidade}</p>
           <p><strong>ID Paciente:</strong> ${c.idPaciente}</p>
           <p><strong>ID Médico:</strong> ${c.idMedico}</p>
@@ -59,12 +74,7 @@ form.addEventListener("submit", async (e) => {
     return;
   }
 
-  const novaConsulta = {
-    dataHora,
-    modalidade,
-    idPaciente,
-    idMedico
-  };
+  const novaConsulta = { dataHora, modalidade, idPaciente, idMedico };
 
   try {
     const res = await fetch(API_URL, {
@@ -77,7 +87,7 @@ form.addEventListener("submit", async (e) => {
 
     alert("✅ Consulta agendada com sucesso!");
     form.reset();
-    carregarConsultas();
+    carregarConsultas(); // Atualiza e aplica formatação automaticamente
   } catch (err) {
     console.error("❌ Erro ao agendar consulta:", err);
     alert("Erro ao agendar consulta.");
@@ -94,10 +104,7 @@ async function editarConsulta(id) {
     return;
   }
 
-  const payload = {
-    dataHora: novaData,
-    modalidade: novaModalidade,
-  };
+  const payload = { dataHora: novaData, modalidade: novaModalidade };
 
   try {
     const res = await fetch(`${API_URL}/${id}`, {
@@ -109,7 +116,7 @@ async function editarConsulta(id) {
     if (!res.ok) throw new Error(`Erro ${res.status}`);
 
     alert("✅ Consulta atualizada com sucesso!");
-    carregarConsultas();
+    carregarConsultas(); // Atualiza cards já formatados
   } catch (err) {
     console.error("❌ Erro ao editar consulta:", err);
     alert("Erro ao editar consulta.");

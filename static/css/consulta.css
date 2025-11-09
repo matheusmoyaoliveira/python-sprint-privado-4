@@ -218,3 +218,72 @@
 .page-consultas .btn-edit:hover {
   background-color: #e67e22;
 }
+
+/* ======== CARDS DE CONSULTAS ======== */
+.card-consulta {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin: 20px auto;
+  max-width: 400px;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+
+.card-consulta:hover {
+  transform: translateY(-5px);
+}
+
+.card-header {
+  background: var(--cor-secundaria);
+  color: white;
+  text-align: center;
+  padding: 12px;
+  font-weight: 600;
+}
+
+.card-body {
+  padding: 20px;
+  text-align: left;
+  line-height: 1.6;
+  color: #333;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 15px;
+  border-top: 1px solid #eee;
+  background: #fafafa;
+}
+
+.btn-delete {
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.btn-edit {
+  background: #f39c12;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.btn-delete:hover {
+  background: #c0392b;
+}
+
+.btn-edit:hover {
+  background: #d68910;
+}

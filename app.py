@@ -294,6 +294,8 @@ def consultas_excluir(cid):
 # ===================== API CONSULTAS =====================
 consultas_json = [
     {"id": 1, "dataHora": "2025-11-10 10:00:00", "modalidade": "Presencial", "idPaciente": 1, "idMedico": 2},
+    {"id": 2, "dataHora": "2025-11-11 14:30:00", "modalidade": "Online", "idPaciente": 2, "idMedico": 1},
+    {"id": 3, "dataHora": "2025-11-12 09:15:00", "modalidade": "Presencial", "idPaciente": 3, "idMedico": 3}
 ]
 
 @app.route("/api/consultas", methods=["GET"])
