@@ -30,6 +30,7 @@ async function carregarPacientes() {
         </div>
         <div class="card-footer">
           <button class="btn btn-delete" onclick="excluirPaciente(${p.id})">Excluir</button>
+          <button class="btn-editar" onclick="editarPaciente(${p.id})">Editar</button>
         </div>
       `;
       container.appendChild(card);
@@ -68,6 +69,44 @@ form.addEventListener("submit", async (e) => {
     alert("Erro ao adicionar paciente!");
   }
 });
+
+// =============== EDITAR PACIENTE (PUT) ===============
+
+async function editarPaciente(id) {
+  const novoNome = prompt("Digite o novo nome:");
+  const novaIdade = prompt("Digite a nova idade:");
+  const novoCpf = prompt("Digite o novo CPF:");
+  const novoTelefone = prompt("Digite o novo telefone:");
+
+  if (!novoNome || !novaIdade || !novoCpf || !novoTelefone) {
+    alert("Todos os campos são obrigatórios!");
+    return;
+  }
+
+  const payload = {
+    nome: novoNome,
+    idade: parseInt(novaIdade),
+    cpf: novoCpf,
+    telefone: novoTelefone
+  };
+
+  try {
+    const res = await fetch(`${API_URL}/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) throw new Error(`Erro ao editar paciente: ${res.status}`);
+
+    alert("✅ Paciente atualizado com sucesso!");
+    carregarPacientes();
+  } catch (err) {
+    console.error(err);
+    alert("❌ Erro ao editar paciente.");
+  }
+}
+
 
 // =============== EXCLUIR PACIENTE (DELETE) ===============
 async function excluirPaciente(id) {

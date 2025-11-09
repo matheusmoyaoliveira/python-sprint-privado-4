@@ -381,3 +381,17 @@ textarea {
   flex: 1 1 320px;             
   max-width: 360px;
 }
+
+.btn-editar {
+  background-color: #f5a623;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-editar:hover {
+  background-color: #d48a15;
+}

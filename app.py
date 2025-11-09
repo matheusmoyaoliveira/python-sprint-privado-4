@@ -140,6 +140,18 @@ def api_criar_paciente():
     pacientes_json.append(novo)
     return jsonify(novo), 201
 
+@app.route("/api/pacientes/<int:id>", methods=["PUT"])
+def api_atualizar_paciente(id):
+    data = request.get_json()
+    for p in pacientes_json:
+        if p["id"] == id:
+            p["nome"] = data.get("nome", p["nome"])
+            p["idade"] = data.get("idade", p["idade"])
+            p["cpf"] = data.get("cpf", p["cpf"])
+            p["telefone"] = data.get("telefone", p["telefone"])
+            return jsonify(p), 200
+    return jsonify({"error": "Paciente não encontrado"}), 404
+
 @app.route("/api/pacientes/<int:id>", methods=["DELETE"])
 def api_excluir_paciente(id):
     """Exclui paciente via JSON"""
