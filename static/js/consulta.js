@@ -1,6 +1,5 @@
 // ================= CONSULTAS =================
 const API_URL = "https://python-sprint-privado-4.onrender.com/api/consultas";
-
 const form = document.getElementById("formConsulta");
 const container = document.getElementById("listaConsultas");
 
@@ -64,16 +63,19 @@ async function carregarConsultas() {
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const dataHora = document.getElementById("dataHora").value;
+  const data = document.getElementById("data").value;
+  const hora = document.getElementById("hora").value;
   const modalidade = document.getElementById("modalidade").value;
   const idPaciente = parseInt(document.getElementById("idPaciente").value);
   const idMedico = parseInt(document.getElementById("idMedico").value);
 
-  if (!dataHora || !modalidade || !idPaciente || !idMedico) {
+  if (!data || !hora || !modalidade || !idPaciente || !idMedico) {
     alert("Preencha todos os campos!");
     return;
   }
 
+  // Junta data + hora no formato esperado pela API
+  const dataHora = `${data} ${hora}:00`;
   const novaConsulta = { dataHora, modalidade, idPaciente, idMedico };
 
   try {
@@ -87,7 +89,7 @@ form.addEventListener("submit", async (e) => {
 
     alert("✅ Consulta agendada com sucesso!");
     form.reset();
-    carregarConsultas(); // Atualiza e aplica formatação automaticamente
+    carregarConsultas();
   } catch (err) {
     console.error("❌ Erro ao agendar consulta:", err);
     alert("Erro ao agendar consulta.");
@@ -96,15 +98,17 @@ form.addEventListener("submit", async (e) => {
 
 // ================== EDITAR CONSULTA (PUT) ==================
 async function editarConsulta(id) {
-  const novaData = prompt("Digite a nova data/hora (yyyy-MM-dd HH:mm:ss):");
+  const novaData = prompt("Digite a nova data (AAAA-MM-DD):");
+  const novaHora = prompt("Digite a nova hora (HH:MM):");
   const novaModalidade = prompt("Digite a nova modalidade (Presencial ou Online):");
 
-  if (!novaData || !novaModalidade) {
+  if (!novaData || !novaHora || !novaModalidade) {
     alert("Todos os campos são obrigatórios!");
     return;
   }
 
-  const payload = { dataHora: novaData, modalidade: novaModalidade };
+  const novaDataHora = `${novaData} ${novaHora}:00`;
+  const payload = { dataHora: novaDataHora, modalidade: novaModalidade };
 
   try {
     const res = await fetch(`${API_URL}/${id}`, {
@@ -116,7 +120,7 @@ async function editarConsulta(id) {
     if (!res.ok) throw new Error(`Erro ${res.status}`);
 
     alert("✅ Consulta atualizada com sucesso!");
-    carregarConsultas(); // Atualiza cards já formatados
+    carregarConsultas();
   } catch (err) {
     console.error("❌ Erro ao editar consulta:", err);
     alert("Erro ao editar consulta.");
