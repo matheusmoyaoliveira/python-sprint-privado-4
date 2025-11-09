@@ -92,24 +92,38 @@ form.addEventListener("submit", async (e) => {
 });
 
 
-// =============== EDITAR PACIENTE (PUT) ===============
-
+// ============== EDITAR PACIENTE (PUT) ==============
 async function editarPaciente(id) {
   const novoNome = prompt("Digite o novo nome:");
   const novaIdade = prompt("Digite a nova idade:");
-  const novoCpf = prompt("Digite o novo CPF:");
-  const novoTelefone = prompt("Digite o novo telefone:");
+  const novoCpf = prompt("Digite o novo CPF (apenas números):");
+  const novoTelefone = prompt("Digite o novo telefone (apenas números):");
 
   if (!novoNome || !novaIdade || !novoCpf || !novoTelefone) {
     alert("Todos os campos são obrigatórios!");
     return;
   }
 
+  // Funções de formatação (mesmas do POST)
+  function formatarCPF(cpf) {
+    cpf = cpf.replace(/\D/g, ""); // remove não dígitos
+    return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+  }
+
+  function formatarTelefone(telefone) {
+    telefone = telefone.replace(/\D/g, "");
+    return telefone.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
+  }
+
+  // Aplica formatação
+  const cpfFormatado = formatarCPF(novoCpf);
+  const telefoneFormatado = formatarTelefone(novoTelefone);
+
   const payload = {
-    nome: novoNome,
+    nome: novoNome.trim(),
     idade: parseInt(novaIdade),
-    cpf: novoCpf,
-    telefone: novoTelefone
+    cpf: cpfFormatado,
+    telefone: telefoneFormatado
   };
 
   try {
