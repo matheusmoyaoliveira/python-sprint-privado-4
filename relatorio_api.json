@@ -1,0 +1,65 @@
+{
+    "total_pacientes": 5,
+    "pacientes": [
+        {
+            "id": "2",
+            "nome": "João da Silva",
+            "cpf": "23456789015",
+            "rg": "2233447",
+            "altura": 1.85,
+            "peso": 90.0,
+            "dataNascimento": "1988-03-22",
+            "escolaridade": "Ensino Médio",
+            "estadoCivil": "Casado",
+            "descricao": "Paciente hipertenso sob controle"
+        },
+        {
+            "id": "5",
+            "nome": "Pedro Carvalho",
+            "cpf": "98765432100",
+            "rg": "7654321",
+            "altura": 1.75,
+            "peso": 72.3,
+            "dataNascimento": "1988-09-12",
+            "escolaridade": "Ensino Médio",
+            "estadoCivil": "Casado",
+            "descricao": "Paciente diabético em acompanhamento"
+        },
+        {
+            "id": "7",
+            "nome": "José da Silva",
+            "cpf": "12345633333",
+            "rg": "1234599",
+            "altura": 1.82,
+            "peso": 90.0,
+            "dataNascimento": "1995-05-25",
+            "escolaridade": "Ensino Médio",
+            "estadoCivil": "Solteiro",
+            "descricao": "Paciente com histórico de ansiedade leve"
+        },
+        {
+            "id": "8",
+            "nome": "José Augusto",
+            "cpf": "99965432111",
+            "rg": "8741230",
+            "altura": 1.7,
+            "peso": 65.0,
+            "dataNascimento": "1990-03-15",
+            "escolaridade": "Ensino Superior",
+            "estadoCivil": "Solteiro",
+            "descricao": "Paciente com histórico de ansiedade leve"
+        },
+        {
+            "id": "9",
+            "nome": "João da Souza",
+            "cpf": "23456789015",
+            "rg": "2233446",
+            "altura": 1.8,
+            "peso": 85.2,
+            "dataNascimento": "1988-03-22",
+            "escolaridade": "Ensino Médio",
+            "estadoCivil": "Casado",
+            "descricao": "Paciente hipertenso sob controle"
+        }
+    ]
+}

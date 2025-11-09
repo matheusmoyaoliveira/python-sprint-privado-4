@@ -1,199 +1,220 @@
-/* ====== CONSULTAS – layout geral ====== */
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 30px auto 20px;
-  max-width: 1100px;
-  padding: 0 10px;
-}
+/* ------------------------------------------------------------
+   CONSULTAS - LISTAGEM E FORMULÁRIOS
+------------------------------------------------------------ */
 
-.page-header h1 {
-  font-size: 28px;
-  color: #0f2667;
-  font-weight: 800;
-}
-
-.page-header .emoji {
-  font-size: 26px;
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  border: none;
-  cursor: pointer;
-  padding: 10px 14px;
+.consultas-container {
+  background-color: var(--cor-branca);
+  padding: 20px;
   border-radius: 10px;
-  font-weight: 700;
-  letter-spacing: .2px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, .06);
-  transition: .2s;
-  background: #e9eef7;
-  color: #123;
-}
-.btn:hover {
-  transform: translateY(-1px);
-}
-.btn-primary {
-  background: #1677ff;
-  color: #fff;
-}
-.btn-primary:hover {
-  background: #1469e2;
-}
-.btn-success {
-  background: #28a745;
-  color: #fff;
-}
-.btn-success:hover {
-  background: #22863a;
-}
-.btn-danger {
-  background: #e55353;
-  color: #fff;
-}
-.btn-danger:hover {
-  background: #d94a4a;
-}
-.btn-secondary {
-  background: #eef2f7;
-  color: #243;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
 }
 
-/* ===== Tabela ===== */
-.card-table {
-  max-width: 1100px;
-  margin: 0 auto;
-  background: #fff;
-  border-radius: 14px;
-  box-shadow: 0 6px 24px rgba(15, 38, 103, .06);
-  overflow: hidden;
-  border: 1px solid #eef2f7;
-}
-.tbl {
+.consultas-container table {
   width: 100%;
   border-collapse: collapse;
 }
-.tbl thead th {
-  background: linear-gradient(180deg, #f8fbff, #eef4ff);
-  color: #234;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: .06em;
-  font-size: 12px;
-  padding: 14px 16px;
-  border-bottom: 1px solid #e8eef7;
+
+.consultas-container th,
+.consultas-container td {
+  padding: 12px;
   text-align: left;
-}
-.tbl tbody td {
-  padding: 14px 16px;
-  border-bottom: 1px solid #f1f5fa;
-  color: #243b53;
-}
-.tbl tbody tr:hover {
-  background: #f9fbff;
-}
-.acoes {
-  display: flex;
-  gap: 8px;
-  align-items: center;
+  border-bottom: 1px solid #eee;
 }
 
-/* ===== Modal ===== */
-.modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(9, 22, 51, .35);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 90;
+.consultas-container th {
+  background-color: var(--cor-principal);
+  color: var(--cor-branca);
 }
-.modal.show {
-  display: flex;
+
+.consultas-container tr:hover {
+  background-color: #f7f7f7;
 }
-.modal-box {
-  width: min(720px, 92vw);
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, .18);
-  overflow: hidden;
+
+.btn-status {
+  padding: 4px 10px;
+  border-radius: 6px;
+  color: #fff;
+  font-weight: 500;
 }
-.modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 18px;
-  border-bottom: 1px solid #eef2f7;
+
+.btn-status.aprovada {
+  background-color: #2ecc71;
 }
-.modal-header h2 {
-  font-size: 20px;
-  color: #0f2667;
-  font-weight: 800;
+
+.btn-status.pendente {
+  background-color: #f39c12;
 }
-.modal-close {
-  background: #f1f5fa;
-  border: none;
-  border-radius: 8px;
-  padding: 6px 10px;
-  cursor: pointer;
+
+.btn-status.cancelada {
+  background-color: #e74c3c;
 }
-.modal-close:hover {
-  background: #eaf1fb;
+
+/* ------------------------------------------------------------
+   CONSULTAS - FORMULÁRIO CENTRALIZADO
+------------------------------------------------------------ */
+.form-section {
+  background: var(--cor-branca);
+  padding: 40px 50px;
+  border-radius: 14px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+  margin: 30px auto 50px auto;
+  max-width: 600px;
+  text-align: center;
 }
-.modal .grid {
+
+.form-section h2 {
+  color: var(--cor-principal);
+  margin-bottom: 25px;
+  font-size: 1.6rem;
+}
+
+.form-paciente input,
+.form-paciente select {
+  border: 1px solid #dcdde1;
+  background-color: #fafafa;
+  transition: 0.2s;
+}
+
+.form-paciente input:focus,
+.form-paciente select:focus {
+  border-color: var(--cor-secundaria);
+  background-color: #fff;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(26, 188, 156, 0.15);
+}
+
+.btn {
+  margin-top: 20px;
+}
+
+/* ------------------------------------------------------------
+   CONSULTAS - CARDS
+------------------------------------------------------------ */
+.cards-container {
   display: grid;
-  gap: 14px;
-  padding: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 25px;
+  justify-items: center;
+  margin-top: 30px;
 }
-.modal .grid.two {
-  grid-template-columns: 1fr 1fr;
+
+.card {
+  width: 100%;
+  max-width: 300px;
+  background: var(--cor-branca);
+  border-radius: 14px;
+  padding: 20px 18px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+  text-align: left;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.modal .grid .span-2 {
-  grid-column: 1 / -1;
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.15);
 }
-.form-control {
+
+.card h3 {
+  color: var(--cor-principal);
+  margin-bottom: 8px;
+}
+
+.card p {
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+  color: #555;
+}
+
+/* ===== Overrides específicos da página de Consultas ===== */
+
+.page-consultas .form-section {
+  max-width: 900px;
+  padding: 48px 64px;
+  margin: 30px auto 50px;
+  background: var(--cor-branca);
+  border-radius: 16px;
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.page-consultas .form-modern {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-}
-.form-control label {
-  font-size: 12px;
-  color: #566;
-  letter-spacing: .04em;
-  text-transform: uppercase;
-}
-.form-control input,
-.form-control select {
-  height: 42px;
-  border: 1px solid #dfe7f3;
-  border-radius: 10px;
-  padding: 0 12px;
-  font-size: 15px;
-}
-.form-control input:focus,
-.form-control select:focus {
-  outline: none;
-  border-color: #1677ff;
-  box-shadow: 0 0 0 3px rgba(22, 119, 255, .12);
-}
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  padding: 12px 18px;
-  border-top: 1px solid #eef2f7;
+  gap: 20px;
 }
 
-@media (max-width: 900px) {
-  .page-header {
-    flex-direction: column;
-    gap: 10px;
-    align-items: flex-start;
-  }
-  .modal .grid.two {
-    grid-template-columns: 1fr;
-  }
+.page-consultas .form-group {
+  text-align: left;
+}
+
+.page-consultas input,
+.page-consultas select {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #dfe6e9;
+  background: #f8f9fa;
+  transition: 0.2s;
+}
+
+.page-consultas input:focus,
+.page-consultas select:focus {
+  border-color: var(--cor-secundaria);
+  background: #fff;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(26, 188, 156, 0.2);
+}
+
+.page-consultas .center-btn {
+  align-self: center;
+}
+
+/* ==== Cards das Consultas ==== */
+.page-consultas .cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 25px;
+  margin-top: 30px;
+}
+
+.page-consultas .card-consulta {
+  flex: 1 1 300px;
+  max-width: 340px;
+  background: var(--cor-branca);
+  border-radius: 16px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: 0.2s;
+}
+
+.page-consultas .card-consulta:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.page-consultas .card-header {
+  background: var(--cor-secundaria);
+  color: #fff;
+  padding: 14px 20px;
+}
+
+.page-consultas .card-body {
+  padding: 15px 20px;
+}
+
+.page-consultas .card-footer {
+  padding: 15px 20px;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+}
+
+.page-consultas .btn-edit {
+  background-color: #f39c12;
+}
+
+.page-consultas .btn-edit:hover {
+  background-color: #e67e22;
 }

@@ -1,20 +1,22 @@
 {% extends "base.html" %}
 {% block title %}Início - NeuroAI{% endblock %}
-
 {% block content %}
-<main class="inicio-container">
-  <div class="inicio-centro">
-    <section class="intro-box">
-      <h1>Bem-vindo ao Sistema Hospitalar <span class="neuroai-highlight">NeuroAI</span></h1>
-      <p>Gerencie pacientes, médicos e consultas de forma integrada com o banco de dados Oracle.<br>
-      Acesse as seções abaixo para começar.</p>
-    </section>
 
-    <section class="botoes-centrais">
-      <a href="/pacientes" class="btn-acao">👤 Pacientes</a>
-      <a href="/medicos" class="btn-acao">🩺 Médicos</a>
-      <a href="/consultas" class="btn-acao">📅 Consultas</a>
-    </section>
-  </div>
-</main>
+<section class="home-hero">
+  <h1>👋 Bem-vindo(a) ao <span class="highlight">NeuroAI</span></h1>
+  <p class="subtitle">
+    Sua plataforma inteligente de gestão médica.  
+    Aqui você pode cadastrar pacientes, médicos, agendar consultas  
+    e até prever a probabilidade de comparecimento com IA 🤖
+  </p>
+</section>
+
+<div class="home-buttons">
+  <a href="{{ url_for('pacientes_listar') }}" class="btn">🧍 Pacientes</a>
+  <a href="{{ url_for('medicos_listar') }}" class="btn">🩺 Médicos</a>
+  <a href="{{ url_for('consultas_listar') }}" class="btn">📅 Consultas</a>
+  <a href="{{ url_for('predict_view') }}" class="btn">🔮 Previsões</a>
+  <a href="{{ url_for('exportar_view') }}" class="btn">📦 Relatórios</a>
+</div>
+
 {% endblock %}

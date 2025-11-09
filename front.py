@@ -51,7 +51,7 @@ def index():
     return render_template("index.html")
 
 # ------------------------------------------------------------
-# PACIENTES
+# PACIENTES front.py
 # ------------------------------------------------------------
 @app.route("/pacientes", methods=["GET"])
 def pacientes_listar():
@@ -113,7 +113,7 @@ def pacientes_editar(pid):
     return redirect(url_for("pacientes_listar"))
 
 # ------------------------------------------------------------
-# MÉDICOS
+# MÉDICOS front.py
 # ------------------------------------------------------------
 @app.route("/medicos", methods=["GET"])
 def medicos_listar():
@@ -167,7 +167,7 @@ def medicos_editar(mid):
     return redirect(url_for("medicos_listar"))
 
 # ------------------------------------------------------------
-# CONSULTAS
+# CONSULTAS front.py
 # ------------------------------------------------------------
 @app.route("/consultas", methods=["GET"])
 def consultas_listar():
@@ -202,8 +202,4 @@ def consultas_excluir(cid):
         flash_err(f"❌ Erro ao excluir consulta: {data}")
     return redirect(url_for("consultas_listar"))
 
-# ------------------------------------------------------------
-# EXECUÇÃO
-# ------------------------------------------------------------
-if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=8080, debug=True)
+

@@ -23,27 +23,24 @@
     {% endif %}
 </head>
 <body>
-    <header>
-        <nav class="navbar">
-            <div class="logo">
-                <span>🧠 NeuroAI</span>
-            </div>
-            <ul class="menu">
-                <li><a href="/">Início</a></li>
-                <li><a href="/pacientes">Pacientes</a></li>
-                <li><a href="/medicos">Médicos</a></li>
-                <li><a href="/consultas">Consultas</a></li>
-                <li><a href="/prever">Previsão</a></li>
-            </ul>
-        </nav>
-    </header>
+  <header class="navbar">
+    <h2 class="logo">🧠 NeuroAI</h2>
+    <nav>
+      <a href="{{ url_for('index') }}">🏠 Início</a>
+      <a href="{{ url_for('pacientes_listar') }}">🧍 Pacientes</a>
+      <a href="{{ url_for('medicos_listar') }}">🩺 Médicos</a>
+      <a href="{{ url_for('consultas_listar') }}">📅 Consultas</a>
+      <a href="{{ url_for('predict_view') }}">🔮 Previsão</a>
+      <a href="{{ url_for('exportar_view') }}">📦 Relatórios</a>
+    </nav>
+  </header>
 
-    <main class="{% if request.path == '/' %}inicio-main{% endif %}">
-        {% block content %}{% endblock %}
-    </main>
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
 
-    <footer>
-        <p>© 2025 <strong>NeuroAI</strong> — Sistema Hospitalar | Desenvolvido por <strong>Matheus Moya</strong>, Daniel Nicolas Leoterio e Ana Carolina Pereira Fontes</p>
-    </footer>
+  <footer>
+    <p>© 2025 NeuroAI — Sistema de Gestão Médica</p>
+  </footer>
 </body>
 </html>

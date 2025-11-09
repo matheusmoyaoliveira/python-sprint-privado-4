@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Resultado da Previsão - NeuroAI{% endblock %}
+{% block content %}
+
+<section class="page-header">
+  <h1>🎯 Resultado da Previsão</h1>
+</section>
+
+<div class="card-result">
+  <h2>Probabilidade de Comparecimento:</h2>
+  <p class="prob-value">{{ prob }}</p>
+  <p class="prob-interpret">{{ interpretacao }}</p>
+
+  <br>
+  <a href="{{ url_for('predict_view') }}" class="btn btn-secondary">🔁 Nova Previsão</a>
+</div>
+
+{% endblock %}

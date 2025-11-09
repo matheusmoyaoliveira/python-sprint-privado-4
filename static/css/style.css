@@ -1,520 +1,242 @@
-/* =========================================================
-   NEUROAI — GLOBAL STYLES (style.css)
-   - Base reset, tokens, layout (header/main/footer)
-   - Tipografia, cores, botões, formulários, tabelas
-   - Utilitários e responsividade
-   ---------------------------------------------------------
-   Páginas específicas terão seus próprios arquivos:
-   - home.css, prever.css, pacientes.css, medicos.css, consultas.css
-   ========================================================= */
+/* ------------------------------------------------------------
+   ESTILO BASE - NEUROAI (Navbar fixa + conteúdo centralizado)
+------------------------------------------------------------ */
 
-/* ---------------------------
-   0) CSS Reset + Normalização
-   --------------------------- */
-*,
-*::before,
-*::after { box-sizing: border-box; }
+:root {
+  --cor-principal: #1e1e2f; /* navbar escura */
+  --cor-secundaria: #00b894;
+  --cor-hover: #019875;
+  --cor-fundo: #f5f6fa;
+  --cor-texto: #2d3436;
+  --cor-branca: #fff;
+}
 
-html, body { height: 100%; }
-
-html { -webkit-text-size-adjust: 100%; }
-
-body {
+* {
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
-  font-family: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
-  color: #1f2937; /* slate-800 */
-  background: #f5f7fb; /* leve */
-  line-height: 1.5;
-  letter-spacing: 0.2px;
+  padding: 0;
 }
 
-/* Suaviza fontes em alguns SOs */
-body, input, button, select, textarea {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Remove estilização padrão de listas de navegação */
-ul { list-style: none; padding: 0; margin: 0; }
-
-/* Links */
-a { color: inherit; text-decoration: none; }
-a:focus { outline: 3px solid #93c5fd33; outline-offset: 2px; }
-
-/* Imagens responsivas */
-img, svg { max-width: 100%; height: auto; display: block; }
-
-/* ---------------------------
-   1) Design Tokens (variáveis)
-   --------------------------- */
-:root{
-  /* Cores de marca */
-  --brand: #0d6efd;              /* azul principal */
-  --brand-600: #0b5ed7;
-  --brand-700: #0a58ca;
-
-  /* Sucesso / Alerta / Erro */
-  --success: #22c55e;
-  --success-700: #15803d;
-  --warning: #f59e0b;
-  --danger:  #ef4444;
-
-  /* Neutros */
-  --bg:      #f5f7fb;
-  --card:    #ffffff;
-  --muted:   #6b7280;            /* slate-500 */
-  --line:    #e5e7eb;            /* slate-200 */
-  --shadow:  0 8px 24px rgba(15, 23, 42, 0.08);
-}
-
-/* ---------------------------
-   2) Layout base (Header/Main/Footer)
-   --------------------------- */
-/* Deixa o footer na base da tela sem ficar "fixo" */
 body {
+  background-color: var(--cor-fundo);
+  color: var(--cor-texto);
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
+  align-items: center; /* centraliza conteúdo */
 }
-main { flex: 1 0 auto; }
-footer { flex-shrink: 0; }
 
-.navbar {
-  position: sticky;
+/* ------------------------------------------------------------
+   NAVBAR FIXA ESCURA
+------------------------------------------------------------ */
+header.navbar {
+  position: fixed;
   top: 0;
-  z-index: 50;
-  background: var(--brand);
-  color: #fff;
-  box-shadow: 0 2px 14px rgba(2, 6, 23, .18);
-}
-
-.navbar .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 14px 20px;
+  left: 0;
+  width: 100%;
+  background-color: var(--cor-principal);
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
+  padding: 15px 40px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  z-index: 1000;
 }
 
-.logo { font-weight: 700; letter-spacing: .2px; display: flex; align-items: center; gap: 8px; }
-.logo span { font-size: 18px; }
-
-.menu { display: flex; align-items: center; gap: 22px; }
-.menu a {
-  color: #eaf2ff;
-  font-weight: 600;
-  padding: 8px 10px;
-  border-radius: 10px;
-  transition: background .2s ease, color .2s ease, transform .08s ease-in;
-}
-.menu a:hover { background: rgba(255,255,255,.12); color: #ffffff; }
-.menu a:active { transform: translateY(1px); }
-
-/* Conteúdo padrão */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 24px;
+header.navbar .logo {
+  color: var(--cor-branca);
+  font-size: 1.4rem;
+  font-weight: bold;
+  letter-spacing: 1px;
 }
 
-/* Cartões/caixas genéricas (pode ser usada em qualquer página) */
-.card {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  box-shadow: var(--shadow);
-  padding: 24px;
+header.navbar nav a {
+  color: var(--cor-branca);
+  margin-left: 20px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
 }
 
-/* Footer */
-footer {
-  background: #ffffff;
-  border-top: 1px solid var(--line);
-  color: var(--muted);
+header.navbar nav a:hover {
+  color: var(--cor-secundaria);
+}
+
+/* ------------------------------------------------------------
+   CONTEÚDO PRINCIPAL CENTRALIZADO
+------------------------------------------------------------ */
+main.container {
+  flex: 1;
+  width: 100%;
+  max-width: 1100px;
+  padding: 100px 40px 40px 40px; /* espaçamento do topo p/ navbar fixa */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* centraliza horizontalmente */
+}
+
+.page-header {
+  margin-bottom: 25px;
   text-align: center;
-  font-size: 14px;
-  padding: 16px 12px;
 }
 
-/* ---------------------------
-   3) Tipografia utilitária
-   --------------------------- */
-.h1, h1 { font-size: clamp(24px, 2.2vw, 32px); margin: 0 0 12px 0; color: #0b1220; }
-.h2, h2 { font-size: clamp(20px, 1.8vw, 26px); margin: 0 0 10px 0; color: #0b1220; }
-.h3, h3 { font-size: clamp(18px, 1.5vw, 22px); margin: 0 0 8px 0;  color: #0b1220; }
+.page-header h1 {
+  color: var(--cor-principal);
+  margin-bottom: 10px;
+}
 
-.text-muted { color: var(--muted); }
-.text-center { text-align: center; }
+.page-header p {
+  color: #555;
+}
 
-/* ---------------------------
-   4) Botões base + variações
-   --------------------------- */
+/* ------------------------------------------------------------
+   BOTÕES
+------------------------------------------------------------ */
 .btn {
-  --btn-bg: var(--brand);
-  --btn-bg-hover: var(--brand-700);
-  --btn-color: #fff;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 18px;
-  border-radius: 12px;
-  border: 1px solid transparent;
-  background: var(--btn-bg);
-  color: var(--btn-color);
-  font-weight: 700;
-  letter-spacing: .2px;
-  box-shadow: 0 6px 16px rgba(13,110,253,.18);
-  transition: transform .08s ease, background .2s ease, box-shadow .2s ease;
+  display: inline-block;
+  padding: 10px 20px;
+  margin: 8px;
+  border: none;
+  border-radius: 6px;
   cursor: pointer;
-}
-.btn:hover { background: var(--btn-bg-hover); box-shadow: 0 8px 20px rgba(13,110,253,.24); }
-.btn:active { transform: translateY(1px); }
-
-.btn--primary { --btn-bg: var(--brand); --btn-bg-hover: var(--brand-700); }
-.btn--success { --btn-bg: var(--success); --btn-bg-hover: var(--success-700); box-shadow: 0 6px 16px rgba(34,197,94,.18); }
-.btn--light    {
-  --btn-bg: #f3f6ff;
-  --btn-bg-hover: #e7edff;
-  --btn-color: #0b1220;
-  border: 1px solid #dbe3ff;
-  box-shadow: 0 6px 16px rgba(2,6,23,.06);
-}
-
-/* Ícones dentro do botão (se tiver) */
-.btn i, .btn svg { font-size: 16px; }
-
-/* Grupo de botões centralizado (usado na home e outras) */
-.btn-group {
-  display: flex;
-  gap: 14px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-/* ---------------------------
-   5) Formulários (base)
-   --------------------------- */
-label { font-weight: 600; color: #111827; display: block; margin: 10px 0 6px; }
-
-.input, input[type="text"], input[type="number"], input[type="date"],
-input[type="time"], input[type="email"], input[type="tel"],
-select, textarea {
-  width: 100%;
-  padding: 12px 14px;
-  border: 1px solid #d1d5db; /* gray-300 */
-  border-radius: 12px;
-  background: #fff;
-  color: #0b1220;
-  outline: none;
-  transition: border-color .15s ease, box-shadow .15s ease;
-}
-input:focus, select:focus, textarea:focus {
-  border-color: #93c5fd;         /* blue-300 */
-  box-shadow: 0 0 0 4px #93c5fd33;
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
-}
-@media (max-width: 800px) {
-  .form-row { grid-template-columns: 1fr; }
-}
-
-/* ---------------------------
-   6) Tabelas (base)
-   --------------------------- */
-.table-container {
-  overflow-x: auto;
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  box-shadow: var(--shadow);
-}
-
-table {
-  border-collapse: collapse;
-  width: 100%;
-  min-width: 720px;
-}
-
-thead th {
-  background: #f1f5ff;
-  color: #0b1220;
-  font-weight: 700;
-  letter-spacing: .2px;
-  text-align: left;
-  padding: 14px;
-  border-bottom: 1px solid var(--line);
-}
-
-tbody td {
-  padding: 12px 14px;
-  border-bottom: 1px solid var(--line);
-  color: #374151; /* gray-700 */
-}
-
-tbody tr:hover { background: #f9fbff; }
-
-/* Ações dentro da tabela */
-.table-actions {
-  display: flex;
-  gap: 10px;
-}
-
-/* ---------------------------
-   7) Alertas (feedback)
-   --------------------------- */
-.alert {
-  border-radius: 12px;
-  padding: 12px 14px;
-  font-weight: 600;
-}
-.alert--success { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
-.alert--warning { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
-.alert--danger  { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
-
-/* ---------------------------
-   8) Utilitários rápidos
-   --------------------------- */
-.mt-0{margin-top:0}.mt-8{margin-top:8px}.mt-12{margin-top:12px}.mt-16{margin-top:16px}.mt-24{margin-top:24px}
-.mb-0{margin-bottom:0}.mb-8{margin-bottom:8px}.mb-12{margin-bottom:12px}.mb-16{margin-bottom:16px}.mb-24{margin-bottom:24px}
-.p-16{padding:16px}.p-24{padding:24px}
-.hidden { display: none !important; }
-
-/* ---------------------------
-   9) Responsividade básica
-   --------------------------- */
-@media (max-width: 1024px) {
-  .navbar .container { padding: 12px 16px; }
-}
-
-@media (max-width: 720px) {
-  .menu { gap: 12px; }
-  .menu a { padding: 8px 8px; font-weight: 600; }
-  .btn { width: 100%; justify-content: center; }
-}
-
-/* ---------------------------
-   NAVBAR — topo fixo e moderno
-   --------------------------- */
-
-.navbar {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: linear-gradient(90deg, #0d6efd, #0078ff);
+  text-decoration: none;
   color: #fff;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
+  background-color: var(--cor-secundaria);
+  font-weight: 500;
+  transition: background 0.3s ease, transform 0.1s ease-in-out;
 }
 
-.navbar .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 14px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.btn:hover {
+  background-color: var(--cor-hover);
+  transform: scale(1.03);
 }
 
-/* Logo NeuroAI */
-.logo {
-  font-weight: 700;
-  font-size: 20px;
-  letter-spacing: 0.3px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #fff;
-  transition: transform 0.3s ease;
+.btn-secondary {
+  background-color: #636e72;
 }
 
-.logo:hover {
-  transform: scale(1.05);
+.btn-secondary:hover {
+  background-color: #747d8c;
 }
 
-/* Menu superior */
-.menu {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-}
-
-.menu a {
-  color: #e8f2ff;
-  font-weight: 600;
-  font-size: 15px;
-  padding: 8px 10px;
+/* ------------------------------------------------------------
+   FORMULÁRIOS
+------------------------------------------------------------ */
+form.form-container {
+  background: var(--cor-branca);
+  padding: 25px 30px;
   border-radius: 10px;
-  transition: all 0.25s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
 }
 
-.menu a:hover {
-  background: rgba(255, 255, 255, 0.15);
-  color: #ffffff;
-  transform: translateY(-1px);
+form.form-container label {
+  display: block;
+  margin-top: 15px;
+  font-weight: 500;
 }
 
-/* Indicação da página atual */
-.menu a.active {
-  background: #ffffff;
-  color: #0d6efd;
-  font-weight: 700;
-  box-shadow: 0 2px 6px rgba(255, 255, 255, 0.3);
-}
-
-/* Responsivo */
-@media (max-width: 768px) {
-  .navbar .container {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .menu {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 16px;
-  }
-
-  .menu a {
-    font-size: 14px;
-  }
-}
-
-/* =========================================================
-   NAVBAR — Cabeçalho fixo moderno e responsivo
-   ========================================================= */
-
-.navbar {
-  position: sticky;
-  top: 0;
-  z-index: 100;
+form.form-container input,
+form.form-container select {
   width: 100%;
-  background: linear-gradient(90deg, #0d6efd 0%, #0078ff 100%);
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  padding: 8px;
+  margin-top: 5px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+/* ------------------------------------------------------------
+   CENTRALIZAÇÃO GERAL DO CONTEÚDO
+------------------------------------------------------------ */
+main.container {
+  flex: 1;
+  width: 90%; /* adiciona margem lateral */
+  max-width: 1200px; /* limita pra não estourar */
+  padding: 100px 20px 40px 20px;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  padding: 12px 60px;
-  transition: all 0.3s ease-in-out;
 }
 
-/* Logo fixo à esquerda */
-.logo {
-  font-weight: 800;
-  font-size: 21px;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  user-select: none;
-  text-decoration: none;
-  transition: transform 0.3s ease;
+/* ------------------------------------------------------------
+   FORMULÁRIO DO PREDICT - MAIS LARGO E ORGANIZADO
+------------------------------------------------------------ */
+.form-predict {
+  width: 100%;
+  max-width: 800px; /* aumenta a largura */
+  background: var(--cor-branca);
+  padding: 30px 40px;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
 }
 
-.logo:hover {
-  transform: scale(1.05);
+/* layout em grid */
+.form-predict .form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px 30px;
 }
 
-/* Centralização do menu */
-.menu {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 25px;
-  flex-grow: 1;
-}
-
-/* Links da navbar como botões */
-.menu a {
+/* estilização dos inputs */
+.form-predict label {
   font-weight: 600;
-  font-size: 15px;
-  text-decoration: none;
-  color: #ffffff;
-  padding: 10px 16px;
-  border-radius: 8px;
-  background-color: transparent;
-  transition: all 0.3s ease;
+  margin-bottom: 6px;
+  display: block;
 }
 
-.menu a:hover {
-  background-color: rgba(255, 255, 255, 0.15);
-  box-shadow: 0 3px 8px rgba(255, 255, 255, 0.25);
-  transform: translateY(-2px);
+.form-predict input,
+.form-predict select {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
 }
 
-/* Indicação da página ativa */
-.menu a.active {
-  background-color: #ffffff;
-  color: #0d6efd;
-  font-weight: 700;
-  box-shadow: 0 3px 8px rgba(255, 255, 255, 0.35);
+/* botão alinhado ao centro */
+.form-predict .btn {
+  display: block;
+  margin: 25px auto 0 auto;
+  padding: 12px 30px;
 }
 
-/* Ajuste para manter o layout equilibrado */
-.navbar::after {
-  content: "";
-  flex-basis: 60px; /* reserva espaço do outro lado para balancear o logo */
+
+/* ------------------------------------------------------------
+   CARD DE RESULTADO
+------------------------------------------------------------ */
+.card-result {
+  background: var(--cor-branca);
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 500px;
+  margin-top: 20px;
 }
 
-/* --------------------------
-   Responsividade
---------------------------- */
-@media (max-width: 900px) {
-  .navbar {
-    flex-direction: column;
-    padding: 14px 20px;
-  }
-
-  .menu {
-    flex-wrap: wrap;
-    gap: 14px;
-    justify-content: center;
-  }
-
-  .menu a {
-    font-size: 14px;
-    padding: 8px 14px;
-  }
-
-  .navbar::after {
-    display: none;
-  }
+.prob-value {
+  font-size: 2rem;
+  color: var(--cor-secundaria);
+  margin: 10px 0;
 }
 
-/* Toasts */
-.toast {
-  position: fixed; left: 50%; transform: translateX(-50%) translateY(-20px);
-  bottom: 28px; background: #0b5; color: #fff; padding: 10px 16px; border-radius: 8px;
-  box-shadow: 0 6px 18px rgba(0,0,0,.25); opacity: 0; transition: .3s;
-  z-index: 9999; font-weight: 600;
+.prob-interpret {
+  font-size: 1.1rem;
+  color: #555;
 }
-.toast.err { background:#d33; }
-.toast.show { opacity:1; transform: translateX(-50%) translateY(0); }
 
-/* Modal */
-.modal { position: fixed; inset: 0; background: rgba(0,0,0,.35); display:none; align-items:center; justify-content:center; z-index:9990; }
-.modal.show { display:flex; }
-.modal-box { background:#fff; width:min(760px, 92vw); border-radius:16px; padding:20px; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
-.modal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
-.modal-close { background:transparent; border:none; font-size:18px; cursor:pointer; }
-.grid.two { display:grid; grid-template-columns: 1fr 1fr; gap:14px; }
-.form-control label { display:block; font-size:13px; margin:6px 0 4px; color:#444; }
-.form-control input, .form-control select { width:100%; padding:10px 12px; border:1px solid #e1e5ee; border-radius:10px; }
-.modal-footer { margin-top:12px; display:flex; gap:10px; justify-content:flex-end; }
-
-.page-header { display:flex; align-items:center; justify-content:space-between; margin:20px 0 10px; }
-.card-table { background:#fff; border-radius:16px; padding:14px; box-shadow:0 8px 26px rgba(0,0,0,.08); }
-.tbl { width:100%; border-collapse:collapse; }
-.tbl th, .tbl td { padding:12px 10px; border-bottom:1px solid #eef2f7; }
-.tbl tbody tr:hover { background:#f8fbff; }
-.btn { padding:10px 14px; border:none; border-radius:10px; cursor:pointer; font-weight:600; }
-.btn-primary { background:#0d6efd; color:#fff; }
-.btn-secondary { background:#9aa; color:#fff; }
-.btn-success { background:#28a745; color:#fff; }
-.btn-danger { background:#dc3545; color:#fff; }
-.empty-message { text-align:center; color:#667; padding:24px 0; }
-.alert.ok { background:#e9f9ee; border:1px solid #b8f0c4; color:#185d2d; padding:14px; border-radius:10px; }
-.alert.err { background:#fdeaea; border:1px solid #f5bcbc; color:#7a1414; padding:14px; border-radius:10px; }
-
+/* ------------------------------------------------------------
+   FOOTER
+------------------------------------------------------------ */
+footer {
+  width: 100%;
+  background-color: var(--cor-principal);
+  color: var(--cor-branca);
+  text-align: center;
+  padding: 15px 0;
+  font-size: 0.9rem;
+  margin-top: auto;
+  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.15);
+}

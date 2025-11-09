@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Prever Comparecimento - NeuroAI{% endblock %}
+{% block content %}
+
+<section class="page-header">
+  <h1>🔮 Previsão de Comparecimento</h1>
+  <p>Preencha os dados abaixo para estimar a probabilidade de comparecimento do paciente.</p>
+</section>
+
+<form method="POST" action="{{ url_for('predict_submit') }}" class="form-predict">
+  <div class="form-grid">
+    <div>
+      <label>Bolsa Escolar (Scholarship):</label>
+      <select name="scholarship" required>
+        <option value="0">Não</option>
+        <option value="1">Sim</option>
+      </select>
+    </div>
+
+    <div>
+      <label>Bairro (Neighbourhood):</label>
+      <input type="text" name="neighbourhood" placeholder="Ex: JARDIM DA PENHA" required>
+    </div>
+
+    <div>
+      <label>Gênero:</label>
+      <select name="gender" required>
+        <option value="F">Feminino</option>
+        <option value="M">Masculino</option>
+      </select>
+    </div>
+
+    <div>
+      <label>Idade:</label>
+      <input type="number" name="age" min="0" max="120" required>
+    </div>
+
+    <div>
+      <label>Dia da Semana da Consulta (appt_dow):</label>
+      <input type="number" name="appt_dow" min="0" max="6" required>
+    </div>
+
+    <div>
+      <label>Deficiência (handcap):</label>
+      <select name="handcap" required>
+        <option value="0">Nenhuma</option>
+        <option value="1">Leve</option>
+        <option value="2">Moderada</option>
+        <option value="3">Grave</option>
+        <option value="4">Muito Grave</option>
+      </select>
+    </div>
+
+    <div>
+      <label>Tempo de Espera (waiting_days):</label>
+      <input type="number" name="waiting_days" min="0" required>
+    </div>
+
+    <div>
+      <label>Hipertensão:</label>
+      <select name="hipertension" required>
+        <option value="0">Não</option>
+        <option value="1">Sim</option>
+      </select>
+    </div>
+
+    <div>
+      <label>Recebeu SMS?</label>
+      <select name="sms_received" required>
+        <option value="0">Não</option>
+        <option value="1">Sim</option>
+      </select>
+    </div>
+
+    <div>
+      <label>Alcoolismo:</label>
+      <select name="alcoholism" required>
+        <option value="0">Não</option>
+        <option value="1">Sim</option>
+      </select>
+    </div>
+
+    <div>
+      <label>Fim de Semana?</label>
+      <select name="is_weekend" required>
+        <option value="0">Não</option>
+        <option value="1">Sim</option>
+      </select>
+    </div>
+
+    <div>
+      <label>Hora Agendada (0–23):</label>
+      <input type="number" name="sched_hour" min="0" max="23" required>
+    </div>
+
+    <div>
+      <label>Diabetes:</label>
+      <select name="diabetes" required>
+        <option value="0">Não</option>
+        <option value="1">Sim</option>
+      </select>
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-success">Calcular Probabilidade</button>
+</form>
+
+{% endblock %}
