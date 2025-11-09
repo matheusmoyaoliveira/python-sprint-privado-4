@@ -9,6 +9,7 @@ const container = document.getElementById("pacientesContainer");
 async function carregarPacientes() {
   try {
     const res = await fetch(API_URL);
+    console.log("Status:", res.status, "URL:", API_URL);
     if (!res.ok) throw new Error("Erro ao listar pacientes");
 
     const pacientes = await res.json();
