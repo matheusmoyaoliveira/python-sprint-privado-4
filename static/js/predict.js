@@ -24,7 +24,7 @@ form.addEventListener("submit", async (e) => {
     const result = await res.json();
 
     // Esperando algo tipo { "probabilidade": 0.8453 }
-    const prob = (result.probabilidade * 100).toFixed(2);
+    const prob = result.probabilidade.toFixed(2);
     const interpret =
       prob >= 75
         ? "Alta chance de comparecimento ✅"

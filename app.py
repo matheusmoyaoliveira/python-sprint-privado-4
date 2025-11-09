@@ -368,134 +368,59 @@ def exportar_view():
     """
     return render_template("exportar.html")
 
+# ---------------------------
+# PREDICT - API E FRONT-END
+# ---------------------------
 
-# ------------------------------------------------------------
-# PREDICT
-# ------------------------------------------------------------
-
-@app.route('/predict', methods=['POST'])
+@app.route("/predict", methods=["POST"])
 def prever_comparecimento():
     try:
-        file_id = "1YcOlIeY-aBSM7BKn1G64wg83xnHaM0Tk"
+        # 🔹 ID do modelo no Google Drive
+        file_id = "1yC0lIeY-aBSM7BkIn1G64wg83xnHaM0Tk"
         output = "modelo_regressao.joblib"
 
-        # Baixa o modelo se ainda não existir
+        # 🔹 Baixa o modelo se ainda não existir
         if not os.path.exists(output):
             gdown.download(f"https://drive.google.com/uc?id={file_id}", output, quiet=False)
 
         modelo = joblib.load(output)
 
-        # Lê o JSON enviado
-        dados = request.json
-
-        # Monta DataFrame com as chaves exatamente iguais às usadas no treino
+        # 🔹 Recebe o JSON enviado pelo front
+        dados = request.get_json()
         X = pd.DataFrame([dados])
 
-        # Verifica se todas as colunas necessárias estão presentes
-        colunas_esperadas = [
-            'scholarship', 'neighbourhood', 'gender', 'age', 'appt_dow', 'handcap',
-            'waiting_days', 'hipertension', 'sms_received', 'alcoholism',
-            'is_weekend', 'sched_hour', 'diabetes'
-        ]
-        faltando = [c for c in colunas_esperadas if c not in X.columns]
-        if faltando:
-            return jsonify({"erro": f"Campos ausentes: {faltando}"}), 400
-
-        # Faz a previsão
+        # 🔹 Faz a previsão
         if hasattr(modelo, "predict_proba"):
             probabilidade = modelo.predict_proba(X)[0][1] * 100
         else:
             probabilidade = modelo.predict(X)[0] * 100
 
+        interpretacao = (
+            "Alta chance de comparecimento ✅" if probabilidade > 70 else "Risco de falta ❌"
+        )
+
         return jsonify({
             "mensagem": "Previsão gerada com sucesso!",
-            "probabilidade_comparecimento": f"{probabilidade:.2f}%",
-            "interpretacao": "Alta chance de comparecimento" if probabilidade > 70 else "Risco de falta"
+            "probabilidade": round(probabilidade, 2),
+            "interpretacao": interpretacao
         })
 
     except Exception as e:
         return jsonify({"erro": str(e)}), 500
-    
 
-# ------------------------------------------------------------
-# FRONT-END: PREDICT VIA FORM
-# ------------------------------------------------------------
+
+# 🔹 Página do formulário de previsão
 @app.route("/predict/view", methods=["GET"])
 def predict_view():
-    """
-    Página HTML com o formulário de previsão
-    """
     return render_template("predict.html")
 
 
-@app.route("/predict/submit", methods=["POST"])
-def predict_submit():
-    """
-    Processa o formulário do HTML e mostra o resultado na tela
-    """
-    try:
-        # Carrega o modelo (baixa se não existir)
-        file_id = "1YcOlIeY-aBSM7BKn1G64wg83xnHaM0Tk"
-        output = "modelo_regressao.joblib"
-        if not os.path.exists(output):
-            gdown.download(f"https://drive.google.com/uc?id={file_id}", output, quiet=False)
-        modelo = joblib.load(output)
-
-        # Coleta dados do formulário
-        dados = {
-            "scholarship": int(request.form.get("scholarship", 0)),
-            "neighbourhood": request.form.get("neighbourhood", "UNKNOWN"),
-            "gender": request.form.get("gender", "F"),
-            "age": int(request.form.get("age", 0)),
-            "appt_dow": int(request.form.get("appt_dow", 0)),
-            "handcap": int(request.form.get("handcap", 0)),
-            "waiting_days": int(request.form.get("waiting_days", 0)),
-            "hipertension": int(request.form.get("hipertension", 0)),
-            "sms_received": int(request.form.get("sms_received", 0)),
-            "alcoholism": int(request.form.get("alcoholism", 0)),
-            "is_weekend": int(request.form.get("is_weekend", 0)),
-            "sched_hour": int(request.form.get("sched_hour", 0)),
-            "diabetes": int(request.form.get("diabetes", 0))
-        }
-
-        # Cria DataFrame com as colunas esperadas
-        X = pd.DataFrame([dados])
-
-        # Faz a previsão
-        if hasattr(modelo, "predict_proba"):
-            prob = modelo.predict_proba(X)[0][1] * 100
-        else:
-            prob = modelo.predict(X)[0] * 100
-
-        # Define texto interpretativo
-        interpretacao = "Alta chance de comparecimento" if prob > 70 else "Risco de falta"
-
-        # Renderiza o resultado no HTML
-        return render_template("predict_result.html",
-                               prob=f"{prob:.2f}%",
-                               interpretacao=interpretacao)
-
-    except Exception as e:
-        flash_err(f"Erro ao gerar previsão: {e}")
-        return redirect(url_for("predict_view"))
-
-@app.route("/predict/view")
-def predict_view():
-    return render_template("predict.html")
-
-@app.route("/predict/result")
+# 🔹 Página de resultado
+@app.route("/predict/result", methods=["GET"])
 def predict_result():
     prob = request.args.get("prob")
     interpret = request.args.get("interpret")
     return render_template("predict_result.html", prob=f"{prob}%", interpretacao=interpret)
-
-@app.route("/predict", methods=["POST"])
-def predict_submit():
-    data = request.get_json()
-
-    prob = round(0.65 + 0.1 * (data.get("scholarship", 0)), 4)
-
-    return jsonify({"probabilidade": prob})
 
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=5000, debug=True)
