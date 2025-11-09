@@ -65,7 +65,10 @@
 
     <div>
       <label>Tempo de Espera:</label>
-      <input type="number" name="appt_dow" min="0" max="6" step="1" oninput="if(this.value > 6) this.value = 6;">
+      <div>
+        <label>Tempo de Espera (dias):</label>
+        <input type="number" name="waiting_days" min="0" max="6" step="1" required>
+        </div>
     </div>
 
     <div>
