@@ -1,43 +1,65 @@
-const API_URL = "https://python-sprint-privado-4.onrender.com/predict";
-const form = document.querySelector(".form-predict");
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.querySelector(".form-predict");
+  const resultContainer = document.createElement("div");
+  resultContainer.id = "predict-result";
+  resultContainer.style.marginTop = "20px";
+  resultContainer.style.textAlign = "center";
+  resultContainer.style.fontSize = "1.2rem";
+  form.appendChild(resultContainer);
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-  const formData = new FormData(form);
-  const data = Object.fromEntries(formData.entries());
+    // Função para converter "Sim"/"Não" em 1 e 0
+    const toNumber = (value) => (value === "1" || value === "Sim" ? 1 : 0);
 
-  // Converte strings numéricas para números
-  Object.keys(data).forEach((key) => {
-    data[key] = isNaN(data[key]) ? data[key] : Number(data[key]);
+    const data = {
+      scholarship: parseInt(form.scholarship.value),
+      neighbourhood: form.neighbourhood.value.trim(),
+      gender: form.gender.value === "M" ? 1 : 0,
+      age: parseInt(form.age.value),
+      appt_dow: parseInt(form.appt_dow.value),
+      handcap: parseInt(form.handcap.value),
+      waiting_days: parseInt(form.waiting_days.value),
+      hipertension: toNumber(form.hipertension.value),
+      sms_received: toNumber(form.sms_received.value),
+      alcoholism: toNumber(form.alcoholism.value),
+      is_weekend: toNumber(form.is_weekend.value),
+      sched_hour: parseInt(form.sched_hour.value),
+      diabetes: toNumber(form.diabetes.value),
+    };
+
+    console.log("Enviando JSON:", data);
+
+    try {
+      const res = await fetch("https://python-sprint-privado-4.onrender.com/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (!res.ok) throw new Error("Erro na resposta da API");
+
+      const result = await res.json();
+      console.log("Resposta da API:", result);
+
+      if (result.probabilidade_comparecimento || result.probabilidade) {
+        const prob =
+          result.probabilidade_comparecimento || `${(result.probabilidade * 100).toFixed(2)}%`;
+
+        resultContainer.innerHTML = `
+          <p class="prob-value">Probabilidade de Comparecimento: <strong>${prob}</strong></p>
+        `;
+      } else {
+        resultContainer.innerHTML = `
+          <p style="color: red;">Erro ao calcular probabilidade. Tente novamente.</p>
+        `;
+      }
+    } catch (error) {
+      console.error("Erro:", error);
+      resultContainer.innerHTML = `
+        <p style="color: red;">Erro ao conectar com o servidor. Verifique a API.</p>
+      `;
+    }
   });
-
-  try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-
-    if (!res.ok) throw new Error(`Erro ${res.status}`);
-
-    const result = await res.json();
-
-    // Esperando algo tipo { "probabilidade": 0.8453 }
-    const prob = result.probabilidade.toFixed(2);
-    const interpret =
-      prob >= 75
-        ? "Alta chance de comparecimento ✅"
-        : prob >= 50
-        ? "Média chance de comparecimento ⚠️"
-        : "Baixa chance de comparecimento ❌";
-
-    // Redireciona pro resultado formatado
-    window.location.href = `/predict/result?prob=${prob}&interpret=${encodeURIComponent(
-      interpret
-    )}`;
-  } catch (err) {
-    console.error("Erro ao calcular previsão:", err);
-    alert("Erro ao calcular previsão. Verifique os dados e tente novamente.");
-  }
 });

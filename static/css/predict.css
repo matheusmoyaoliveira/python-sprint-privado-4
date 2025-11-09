@@ -117,3 +117,15 @@ form.form-predict select:focus {
   font-size: 1.2rem;
   color: #555;
 }
+
+#predict-result .prob-value {
+  margin-top: 15px;
+  font-size: 1.3rem;
+  color: var(--cor-secundaria);
+  font-weight: 600;
+}
+
+#predict-result strong {
+  font-size: 1.5rem;
+  color: var(--cor-principal);
+}
