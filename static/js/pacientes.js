@@ -42,33 +42,55 @@ async function carregarPacientes() {
   }
 }
 
-// =============== ADICIONAR PACIENTE (POST) ===============
+// ============== ADICIONAR PACIENTE (POST) ==============
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
+  function formatarCPF(cpf) {
+    cpf = cpf.replace(/\D/g, ""); // remove tudo que não for número
+    return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+  }
+
+  function formatarTelefone(telefone) {
+    telefone = telefone.replace(/\D/g, "");
+    return telefone.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
+  }
+
+  const nome = document.getElementById("nome").value.trim();
+  const idade = document.getElementById("idade").value.trim();
+  const cpf = formatarCPF(document.getElementById("cpf").value.trim());
+  const telefone = formatarTelefone(document.getElementById("telefone").value.trim());
+
+  if (!nome || !idade || !cpf || !telefone) {
+    alert("Por favor, preencha todos os campos corretamente!");
+    return;
+  }
+
   const novoPaciente = {
-    nome: document.getElementById("nome").value,
-    idade: document.getElementById("idade").value,
-    cpf: document.getElementById("cpf").value,
-    telefone: document.getElementById("telefone").value
+    nome,
+    idade: parseInt(idade),
+    cpf,
+    telefone,
   };
 
   try {
     const res = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(novoPaciente)
+      body: JSON.stringify(novoPaciente),
     });
 
     if (!res.ok) throw new Error("Erro ao adicionar paciente");
 
+    alert("✅ Paciente adicionado com sucesso!");
     form.reset();
-    carregarPacientes();
+    carregarPacientes(); // atualiza a lista formatada
   } catch (error) {
     console.error("❌ Erro ao adicionar paciente:", error);
     alert("Erro ao adicionar paciente!");
   }
 });
+
 
 // =============== EDITAR PACIENTE (PUT) ===============
 
