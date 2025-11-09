@@ -113,19 +113,20 @@ def pacientes_editar(pid):
     return redirect(url_for("pacientes_listar"))
 
 # ================== API JSON ==================
-
 from flask import jsonify, request
 
 pacientes_json = [
-    {"id": 1, "nome": "João da Silva", "idade": 45, "cpf": "123.456.789-00", "telefone": "(11) 98888-1111"}
+    {"id": 1, "nome": "João da Silva", "idade": 45, "cpf": "123.456.789-00", "telefone": "(11) 98888-1111"},
+    {"id": 2, "nome": "Maria Oliveira", "idade": 32, "cpf": "987.654.321-00", "telefone": "(11) 97777-2222"},
+    {"id": 3, "nome": "Pedro Santos", "idade": 29, "cpf": "111.222.333-44", "telefone": "(11) 96666-3333"}
 ]
 
-@app.route("/pacientes", methods=["GET"])
+@app.route("/api/pacientes", methods=["GET"])
 def api_listar_pacientes():
     """Retorna todos os pacientes em formato JSON"""
     return jsonify(pacientes_json)
 
-@app.route("/pacientes", methods=["POST"])
+@app.route("/api/pacientes", methods=["POST"])
 def api_criar_paciente():
     """Cria novo paciente via JSON"""
     data = request.get_json()
@@ -139,7 +140,7 @@ def api_criar_paciente():
     pacientes_json.append(novo)
     return jsonify(novo), 201
 
-@app.route("/pacientes/<int:id>", methods=["DELETE"])
+@app.route("/api/pacientes/<int:id>", methods=["DELETE"])
 def api_excluir_paciente(id):
     """Exclui paciente via JSON"""
     global pacientes_json

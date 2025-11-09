@@ -1,5 +1,5 @@
 // URL da API pública hospedada no Render
-const API_URL = "https://python-sprint-privado-4.onrender.com/pacientes";
+const API_URL = "https://python-sprint-privado-4.onrender.com/api/pacientes";
 
 // Elementos do DOM
 const form = document.getElementById("formPaciente");
