@@ -1,65 +1,70 @@
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.querySelector(".form-predict");
+
+  // área de resultado abaixo do botão
   const resultContainer = document.createElement("div");
   resultContainer.id = "predict-result";
-  resultContainer.style.marginTop = "20px";
+  resultContainer.style.marginTop = "16px";
   resultContainer.style.textAlign = "center";
-  resultContainer.style.fontSize = "1.2rem";
+  resultContainer.style.fontSize = "1.05rem";
   form.appendChild(resultContainer);
+
+  const to01 = (v) => (v === "1" || v === "Sim" ? 1 : 0);
+  const toInt = (v, d = 0) => {
+    const n = parseInt(String(v).trim(), 10);
+    return Number.isFinite(n) ? n : d;
+  };
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    // Função para converter "Sim"/"Não" em 1 e 0
-    const toNumber = (value) => (value === "1" || value === "Sim" ? 1 : 0);
+    // Se o input do bairro for texto, vira 0 (ou troca por um código)
+    const rawNeighbour = form.neighbourhood.value;
+    const neighbourhood = toInt(rawNeighbour, 0);
 
     const data = {
-      scholarship: parseInt(form.scholarship.value),
-      neighbourhood: form.neighbourhood.value.trim(),
-      gender: form.gender.value === "M" ? 1 : 0,
-      age: parseInt(form.age.value),
-      appt_dow: parseInt(form.appt_dow.value),
-      handcap: parseInt(form.handcap.value),
-      waiting_days: parseInt(form.waiting_days.value),
-      hipertension: toNumber(form.hipertension.value),
-      sms_received: toNumber(form.sms_received.value),
-      alcoholism: toNumber(form.alcoholism.value),
-      is_weekend: toNumber(form.is_weekend.value),
-      sched_hour: parseInt(form.sched_hour.value),
-      diabetes: toNumber(form.diabetes.value),
+      scholarship: toInt(form.scholarship.value),
+      neighbourhood,
+      gender: form.gender.value === "M" ? 1 : 0, // F->0, M->1
+      age: toInt(form.age.value),
+      appt_dow: toInt(form.appt_dow.value),
+      handcap: toInt(form.handcap.value),
+      waiting_days: toInt(form.waiting_days.value),
+      hipertension: to01(form.hipertension.value),
+      sms_received: to01(form.sms_received.value),
+      alcoholism: to01(form.alcoholism.value),
+      is_weekend: to01(form.is_weekend.value),
+      sched_hour: toInt(form.sched_hour.value),
+      diabetes: to01(form.diabetes.value),
     };
 
-    console.log("Enviando JSON:", data);
-
     try {
-      const res = await fetch("https://python-sprint-privado-4.onrender.com/predict", {
+      const res = await fetch("/predict", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
 
-      if (!res.ok) throw new Error("Erro na resposta da API");
+      const payload = await res.json();
 
-      const result = await res.json();
-      console.log("Resposta da API:", result);
-
-      if (result.probabilidade_comparecimento || result.probabilidade) {
-        const prob =
-          result.probabilidade_comparecimento || `${(result.probabilidade * 100).toFixed(2)}%`;
-
-        resultContainer.innerHTML = `
-          <p class="prob-value">Probabilidade de Comparecimento: <strong>${prob}</strong></p>
-        `;
-      } else {
-        resultContainer.innerHTML = `
-          <p style="color: red;">Erro ao calcular probabilidade. Tente novamente.</p>
-        `;
+      if (!res.ok) {
+        console.error("Erro API:", payload);
+        resultContainer.innerHTML = `<p style="color:#d9534f">Erro: ${payload?.erro || "Falha ao calcular previsão."}</p>`;
+        return;
       }
-    } catch (error) {
-      console.error("Erro:", error);
+
+      const prob = payload.probabilidade; // número
+      const probStr = payload.probabilidade_str || `${Number(prob).toFixed(2)}%`;
+
       resultContainer.innerHTML = `
-        <p style="color: red;">Erro ao conectar com o servidor. Verifique a API.</p>
+        <p class="prob-value">
+          <strong>Probabilidade de Comparecimento:</strong> ${probStr}<br/>
+          <span style="opacity:.9">${payload.interpretacao || ""}</span>
+        </p>
       `;
+    } catch (err) {
+      console.error(err);
+      resultContainer.innerHTML = `<p style="color:#d9534f">Erro ao conectar com o servidor. Verifique a API.</p>`;
     }
   });
 });

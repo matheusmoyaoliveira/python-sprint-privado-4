@@ -375,36 +375,70 @@ def exportar_view():
 @app.route("/predict", methods=["POST"])
 def prever_comparecimento():
     try:
-        # 🔹 ID do modelo no Google Drive
+        # Modelo (baixa 1x se não existir)
         file_id = "1yC0lIeY-aBSM7BkIn1G64wg83xnHaM0Tk"
         output = "modelo_regressao.joblib"
-
-        # 🔹 Baixa o modelo se ainda não existir
         if not os.path.exists(output):
             gdown.download(f"https://drive.google.com/uc?id={file_id}", output, quiet=False)
 
         modelo = joblib.load(output)
 
-        # 🔹 Recebe o JSON enviado pelo front
-        dados = request.get_json()
-        X = pd.DataFrame([dados])
+        # JSON recebido
+        data = request.get_json(force=True) or {}
 
-        # 🔹 Faz a previsão
+        # Normaliza -> tudo numérico
+        def to_int(v, default=0):
+            try:
+                if isinstance(v, str) and v.strip().isdigit():
+                    return int(v.strip())
+                return int(v)
+            except Exception:
+                return default
+
+        payload = {
+            "scholarship":   to_int(data.get("scholarship")),
+            # neighbourhood deve ser numérico. Se vier string, zera.
+            "neighbourhood": to_int(data.get("neighbourhood"), 0),
+            "gender":        to_int(data.get("gender")),        # 0/1
+            "age":           to_int(data.get("age")),
+            "appt_dow":      to_int(data.get("appt_dow")),
+            "handcap":       to_int(data.get("handcap")),
+            "waiting_days":  to_int(data.get("waiting_days")),
+            "hipertension":  to_int(data.get("hipertension")),  # 0/1
+            "sms_received":  to_int(data.get("sms_received")),  # 0/1
+            "alcoholism":    to_int(data.get("alcoholism")),    # 0/1
+            "is_weekend":    to_int(data.get("is_weekend")),    # 0/1
+            "sched_hour":    to_int(data.get("sched_hour")),
+            "diabetes":      to_int(data.get("diabetes")),      # 0/1
+        }
+
+        # Validação de colunas
+        colunas = [
+            "scholarship","neighbourhood","gender","age","appt_dow","handcap",
+            "waiting_days","hipertension","sms_received","alcoholism",
+            "is_weekend","sched_hour","diabetes"
+        ]
+        faltando = [c for c in colunas if c not in payload]
+        if faltando:
+            return jsonify({"erro": f"Campos ausentes: {faltando}"}), 400
+
+        X = pd.DataFrame([payload])
+
+        # Previsão
         if hasattr(modelo, "predict_proba"):
-            probabilidade = modelo.predict_proba(X)[0][1] * 100
+            prob = float(modelo.predict_proba(X)[0][1]) * 100.0
         else:
-            probabilidade = modelo.predict(X)[0] * 100
+            prob = float(modelo.predict(X)[0]) * 100.0
 
-        interpretacao = (
-            "Alta chance de comparecimento ✅" if probabilidade > 70 else "Risco de falta ❌"
-        )
+        prob = round(prob, 2)
+        interpretacao = "Alta chance de comparecimento ✅" if prob > 70 else "Risco de falta ❌"
 
         return jsonify({
             "mensagem": "Previsão gerada com sucesso!",
-            "probabilidade": round(probabilidade, 2),
+            "probabilidade": prob,            # número (ex.: 76.34)
+            "probabilidade_str": f"{prob}%", # string pronta
             "interpretacao": interpretacao
         })
-
     except Exception as e:
         return jsonify({"erro": str(e)}), 500
 
