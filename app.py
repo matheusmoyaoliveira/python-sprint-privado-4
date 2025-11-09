@@ -479,6 +479,23 @@ def predict_submit():
         flash_err(f"Erro ao gerar previsão: {e}")
         return redirect(url_for("predict_view"))
 
+@app.route("/predict/view")
+def predict_view():
+    return render_template("predict.html")
+
+@app.route("/predict/result")
+def predict_result():
+    prob = request.args.get("prob")
+    interpret = request.args.get("interpret")
+    return render_template("predict_result.html", prob=f"{prob}%", interpretacao=interpret)
+
+@app.route("/predict", methods=["POST"])
+def predict_submit():
+    data = request.get_json()
+
+    prob = round(0.65 + 0.1 * (data.get("scholarship", 0)), 4)
+
+    return jsonify({"probabilidade": prob})
 
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=5000, debug=True)
