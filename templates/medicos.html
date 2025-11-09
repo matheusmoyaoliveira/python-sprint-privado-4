@@ -2,64 +2,32 @@
 {% block title %}Médicos - NeuroAI{% endblock %}
 {% block content %}
 
-<div class="page-medicos">
-  <section class="page-header">
-    <h1>🩺 Gerenciamento de Médicos</h1>
-  </section>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/medico.css') }}">
+<script defer src="{{ url_for('static', filename='js/medico.js') }}"></script>
 
-  <section class="form-section">
-    <h2>Adicionar Novo Médico</h2>
+<section class="page-header">
+  <h1>🩺 Gerenciamento de Médicos</h1>
+</section>
 
-    <form method="POST" action="{{ url_for('medicos_novo') }}" class="form-modern">
-      <div class="form-group">
-        <label>Nome do Médico</label>
-        <input type="text" name="nome" required>
-      </div>
-      <div class="form-group">
-        <label>CRM</label>
-        <input type="text" name="crm" required>
-      </div>
-      <div class="form-group">
-        <label>Especialidade</label>
-        <input type="text" name="especialidade" required>
-      </div>
-      <div class="form-group">
-        <label>Telefone</label>
-        <input type="text" name="telefone">
-      </div>
-      <div class="form-group">
-        <label>E-mail</label>
-        <input type="email" name="email">
-      </div>
+<section class="form-section">
+  <h2>Adicionar Novo Médico</h2>
+  <form id="formMedico" class="form-medico">
+    <label for="nome">Nome do Médico</label>
+    <input type="text" id="nome" placeholder="Ex: Dr. João Almeida Jr.">
 
-      <button type="submit" class="btn btn-success">+ Adicionar Médico</button>
-    </form>
-  </section>
+    <label for="crm">CRM</label>
+    <input type="text" id="crm" placeholder="Ex: 12345">
 
-  <section class="cards-list">
-    <h2>Médicos Cadastrados</h2>
-    <div class="cards-container">
-      {% for m in medicos %}
-      <div class="card-medico">
-        <div class="card-header">
-          <h3>{{ m.nome }}</h3>
-          <p class="small"><b>{{ m.crm }}</b></p>
-        </div>
-        <div class="card-body">
-          <p><b>Especialidade:</b> {{ m.especialidade }}</p>
-          <p><b>Telefone:</b> {{ m.telefone }}</p>
-          <p><b>Email:</b> {{ m.email }}</p>
-        </div>
-        <div class="card-footer">
-          <form method="POST" action="{{ url_for('medicos_excluir', mid=m.id) }}">
-            <button type="submit" class="btn btn-delete">Excluir</button>
-          </form>
-          <a href="#" class="btn btn-edit">Editar</a>
-        </div>
-      </div>
-      {% endfor %}
-    </div>
-  </section>
-</div>
+    <label for="especialidade">Especialidade</label>
+    <input type="text" id="especialidade" placeholder="Ex: Cardiologia">
+
+    <button type="submit" class="btn btn-primary">+ Adicionar Médico</button>
+  </form>
+</section>
+
+<section class="list-section">
+  <h2>Médicos Cadastrados</h2>
+  <div id="listaMedicos" class="card-container"></div>
+</section>
 
 {% endblock %}

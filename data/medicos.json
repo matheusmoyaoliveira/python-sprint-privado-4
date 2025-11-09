@@ -2,19 +2,19 @@
   {
     "id": 1,
     "nome": "Dr. João Almeida Jr.",
-    "crm": "12345-SP",
+    "crm": "CRM-12345",
     "especialidade": "Cardiologia"
   },
   {
     "id": 2,
     "nome": "Dra. Fernanda Costa",
-    "crm": "67890-SP",
+    "crm": "CRM-67890",
     "especialidade": "Neurologia"
   },
   {
     "id": 3,
     "nome": "Dr. Daniel Leoterio",
-    "crm": "24680-SP",
+    "crm": "CRM-24680",
     "especialidade": "Ortopedia"
   }
 ]

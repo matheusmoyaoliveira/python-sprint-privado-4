@@ -213,6 +213,47 @@ def medicos_editar(mid):
         flash_err(f"❌ Erro ao atualizar médico: {e}")
     return redirect(url_for("medicos_listar"))
 
+# ===================== API MÉDICOS =====================
+from flask import jsonify, request
+
+medicos_json = [
+    {"id": 1, "nome": "Dr. João Almeida Jr.", "crm": "CRM-12345", "especialidade": "Cardiologia"},
+    {"id": 2, "nome": "Dra. Paula Castro", "crm": "CRM-67890", "especialidade": "Neurologia"},
+]
+
+@app.route("/api/medicos", methods=["GET"])
+def listar_medicos():
+    return jsonify(medicos_json)
+
+@app.route("/api/medicos", methods=["POST"])
+def adicionar_medico():
+    data = request.get_json()
+    novo = {
+        "id": len(medicos_json) + 1,
+        "nome": data.get("nome", ""),
+        "crm": data.get("crm", ""),
+        "especialidade": data.get("especialidade", "")
+    }
+    medicos_json.append(novo)
+    return jsonify(novo), 201
+
+@app.route("/api/medicos/<int:id>", methods=["PUT"])
+def atualizar_medico(id):
+    data = request.get_json()
+    for m in medicos_json:
+        if m["id"] == id:
+            m["nome"] = data.get("nome", m["nome"])
+            m["crm"] = data.get("crm", m["crm"])
+            m["especialidade"] = data.get("especialidade", m["especialidade"])
+            return jsonify(m), 200
+    return jsonify({"error": "Médico não encontrado"}), 404
+
+@app.route("/api/medicos/<int:id>", methods=["DELETE"])
+def excluir_medico(id):
+    global medicos_json
+    medicos_json = [m for m in medicos_json if m["id"] != id]
+    return jsonify({"message": "Médico removido com sucesso"}), 200
+
 
 # ------------------------------------------------------------
 # FRONT-END: CONSULTAS

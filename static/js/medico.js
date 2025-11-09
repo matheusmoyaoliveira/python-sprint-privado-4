@@ -1,197 +1,139 @@
-// === medico.js (versão final) ===
-// Front-end da página de Médicos integrado DIRETAMENTE na API (porta 5000)
+// ================= MÉDICOS =================
+const API_URL = "https://python-sprint-privado-4.onrender.com/api/medicos";
 
-document.addEventListener("DOMContentLoaded", () => {
-  const API_BASE = "http://127.0.0.1:5000";
+const form = document.getElementById("formMedico");
+const container = document.getElementById("listaMedicos");
 
-  const modal = document.getElementById("modalMedico");
-  const btnNovo = document.getElementById("btnNovoMedico");
-  const btnFechar = document.getElementById("modalClose");
-  const btnCancelar = document.getElementById("m_cancelar");
-  const form = document.getElementById("formMedico");
-  const tbody = document.querySelector("#tbl-medicos tbody");
-  const tituloModal = document.getElementById("modalTitulo");
+// ============ FORMATAÇÃO CRM ============
+function formatarCRM(crm) {
+  crm = crm.replace(/\D/g, ""); // remove tudo que não for número
+  return `CRM-${crm}`; // padrão fixo
+}
 
-  let modoEdicao = false;
-  let medicoEditando = null;
+// ================== CARREGAR MÉDICOS (GET) ==================
+async function carregarMedicos() {
+  try {
+    const res = await fetch(API_URL);
+    if (!res.ok) throw new Error(`Erro ${res.status}`);
 
-  // ---- Abertura/fechamento do modal ----
-  function abrirModal() {
-    if (!modal) return;
-    modal.classList.add("show"); // compatível com CSS atual
-    modal.setAttribute("aria-hidden", "false");
-  }
+    const medicos = await res.json();
+    container.innerHTML = "";
 
-  function fecharModal() {
-    if (!modal) return;
-    modal.classList.remove("show");
-    modal.setAttribute("aria-hidden", "true");
-  }
-
-  if (btnNovo) {
-    btnNovo.addEventListener("click", () => {
-      modoEdicao = false;
-      medicoEditando = null;
-      tituloModal.textContent = "Novo Médico";
-      form.reset();
-      abrirModal();
-    });
-  }
-
-  [btnFechar, btnCancelar].forEach((btn) => {
-    if (btn) btn.addEventListener("click", fecharModal);
-  });
-
-  // ---- Renderização das linhas ----
-  function renderLinhas(medicos) {
-    tbody.innerHTML = "";
-    if (!medicos || medicos.length === 0) {
-      tbody.innerHTML =
-        `<tr><td colspan="7" class="empty-message">Nenhum médico cadastrado.</td></tr>`;
+    if (medicos.length === 0) {
+      container.innerHTML = `<p style="text-align:center;">Nenhum médico cadastrado.</p>`;
       return;
     }
 
-    for (const m of medicos) {
-      const tr = document.createElement("tr");
-      tr.dataset.id = m.id;
-      tr.dataset.nome = m.nome || "";
-      tr.dataset.crm = m.crm || "";
-      tr.dataset.especialidade = m.especialidade || "";
-      tr.dataset.telefone = m.telefone || "";
-      tr.dataset.email = m.email || "";
+    medicos.forEach((m) => {
+      const card = document.createElement("div");
+      card.classList.add("card");
 
-      tr.innerHTML = `
-        <td>${m.id ?? ""}</td>
-        <td>${m.nome ?? ""}</td>
-        <td>${m.crm ?? ""}</td>
-        <td>${m.especialidade ?? ""}</td>
-        <td>${m.telefone ?? ""}</td>
-        <td>${m.email ?? ""}</td>
-        <td>
-          <button class="btn btn-sm btnEditar" title="Editar">✎</button>
-          <button class="btn btn-sm btnExcluir" title="Excluir" data-id="${m.id}">🗑</button>
-        </td>
+      card.innerHTML = `
+        <div class="card-header">${m.nome}</div>
+        <div class="card-body">
+          <p><strong>CRM:</strong> ${m.crm}</p>
+          <p><strong>Especialidade:</strong> ${m.especialidade}</p>
+        </div>
+        <div class="card-actions">
+          <button class="btn-excluir" onclick="excluirMedico(${m.id})">Excluir</button>
+          <button class="btn-editar" onclick="editarMedico(${m.id})">Editar</button>
+        </div>
       `;
-      tbody.appendChild(tr);
-    }
 
-    configurarBotoes();
+      container.appendChild(card);
+    });
+  } catch (error) {
+    console.error("❌ Erro ao carregar médicos:", error);
+    container.innerHTML = `<p style="color:red; text-align:center;">Erro ao carregar médicos.</p>`;
+  }
+}
+
+// ================== ADICIONAR MÉDICO (POST) ==================
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const nome = document.getElementById("nome").value.trim();
+  const crm = document.getElementById("crm").value.trim();
+  const especialidade = document.getElementById("especialidade").value.trim();
+
+  if (!nome || !crm || !especialidade) {
+    alert("Por favor, preencha todos os campos!");
+    return;
   }
 
-  // ---- Carregar lista da API ----
-  async function carregarMedicos() {
-    try {
-      const resp = await fetch(`${API_BASE}/medicos`, { method: "GET" });
-      if (!resp.ok) throw new Error(`Falha ao buscar médicos (${resp.status})`);
-      const dados = await resp.json();
-      renderLinhas(dados);
-    } catch (e) {
-      console.error("Erro ao carregar médicos:", e);
-      tbody.innerHTML =
-        `<tr><td colspan="7" class="empty-message">Erro ao carregar médicos.</td></tr>`;
-    }
-  }
+  const novoMedico = {
+    nome,
+    crm: formatarCRM(crm),
+    especialidade
+  };
 
-  // ---- Criar/Editar médico ----
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const payload = {
-      nome: document.getElementById("m_nome").value.trim(),
-      crm: document.getElementById("m_crm").value.trim().toUpperCase(),
-      especialidade: document.getElementById("m_espec").value.trim(),
-      telefone: document.getElementById("m_tel").value.trim(),
-      email: document.getElementById("m_email").value.trim(),
-    };
-
-    if (!/^CRM-\d{5}$/.test(payload.crm)) {
-      mostrarToast("CRM deve seguir o formato CRM-12345.", "error");
-      return;
-    }
-
-    try {
-      let url = `${API_BASE}/medicos`;
-      let method = "POST";
-
-      if (modoEdicao && medicoEditando) {
-        url = `${API_BASE}/medicos/${medicoEditando}`;
-        method = "PUT";
-      }
-
-      const resp = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      if (!resp.ok) {
-        const err = await resp.json().catch(() => ({}));
-        throw new Error(err.erro || `Falha (${resp.status})`);
-      }
-
-      fecharModal();
-      mostrarToast(
-        modoEdicao
-          ? "Médico atualizado com sucesso!"
-          : "Médico adicionado com sucesso!",
-        "success"
-      );
-      await carregarMedicos();
-    } catch (err) {
-      console.error(err);
-      mostrarToast(`Erro ao salvar médico: ${err.message}`, "error");
-    }
-  });
-
-  // ---- Botões de ação ----
-  function configurarBotoes() {
-    document.querySelectorAll(".btnEditar").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const tr = btn.closest("tr");
-        medicoEditando = tr.dataset.id;
-        modoEdicao = true;
-
-        document.getElementById("m_nome").value = tr.dataset.nome || "";
-        document.getElementById("m_crm").value = tr.dataset.crm || "";
-        document.getElementById("m_espec").value = tr.dataset.especialidade || "";
-        document.getElementById("m_tel").value = tr.dataset.telefone || "";
-        document.getElementById("m_email").value = tr.dataset.email || "";
-
-        tituloModal.textContent = "Editar Médico";
-        abrirModal();
-      });
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(novoMedico),
     });
 
-    document.querySelectorAll(".btnExcluir").forEach((btn) => {
-      btn.addEventListener("click", async () => {
-        const id = btn.dataset.id;
-        if (!confirm("Deseja realmente excluir este médico?")) return;
+    if (!res.ok) throw new Error(`Erro ${res.status}`);
 
-        try {
-          const resp = await fetch(`${API_BASE}/medicos/${id}`, { method: "DELETE" });
-          if (!resp.ok) {
-            const err = await resp.json().catch(() => ({}));
-            throw new Error(err.erro || `Falha (${resp.status})`);
-          }
-          mostrarToast("Médico excluído com sucesso!", "success");
-          await carregarMedicos();
-        } catch (err) {
-          console.error(err);
-          mostrarToast(`Erro ao excluir médico: ${err.message}`, "error");
-        }
-      });
-    });
+    alert("✅ Médico adicionado com sucesso!");
+    form.reset();
+    carregarMedicos();
+  } catch (error) {
+    console.error("❌ Erro ao adicionar médico:", error);
+    alert("Erro ao adicionar médico.");
   }
-
-  // ---- Toast simples ----
-  function mostrarToast(msg, tipo = "info") {
-    const toast = document.createElement("div");
-    toast.className = `toast ${tipo}`;
-    toast.textContent = msg;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 2800);
-  }
-
-  // ---- Inicialização ----
-  carregarMedicos();
 });
+
+// ================== EDITAR MÉDICO (PUT) ==================
+async function editarMedico(id) {
+  const novoNome = prompt("Digite o novo nome:");
+  const novoCrm = prompt("Digite o novo CRM (apenas números):");
+  const novaEsp = prompt("Digite a nova especialidade:");
+
+  if (!novoNome || !novoCrm || !novaEsp) {
+    alert("Todos os campos são obrigatórios!");
+    return;
+  }
+
+  const payload = {
+    nome: novoNome.trim(),
+    crm: formatarCRM(novoCrm),
+    especialidade: novaEsp.trim(),
+  };
+
+  try {
+    const res = await fetch(`${API_URL}/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) throw new Error(`Erro ${res.status}`);
+
+    alert("✅ Médico atualizado com sucesso!");
+    carregarMedicos();
+  } catch (err) {
+    console.error("❌ Erro ao editar médico:", err);
+    alert("Erro ao editar médico.");
+  }
+}
+
+// ================== EXCLUIR MÉDICO (DELETE) ==================
+async function excluirMedico(id) {
+  if (!confirm("Tem certeza que deseja excluir este médico?")) return;
+
+  try {
+    const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+    if (!res.ok) throw new Error(`Erro ${res.status}`);
+
+    alert("🗑️ Médico excluído com sucesso!");
+    carregarMedicos();
+  } catch (err) {
+    console.error("❌ Erro ao excluir médico:", err);
+    alert("Erro ao excluir médico.");
+  }
+}
+
+// ================== INICIALIZA ==================
+carregarMedicos();
