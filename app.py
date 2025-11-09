@@ -291,6 +291,44 @@ def consultas_excluir(cid):
         flash_err(f"❌ Erro ao excluir consulta: {e}")
     return redirect(url_for("consultas_listar"))
 
+# ===================== API CONSULTAS =====================
+consultas_json = [
+    {"id": 1, "dataHora": "2025-11-10 10:00:00", "modalidade": "Presencial", "idPaciente": 1, "idMedico": 2},
+]
+
+@app.route("/api/consultas", methods=["GET"])
+def listar_consultas():
+    return jsonify(consultas_json)
+
+@app.route("/api/consultas", methods=["POST"])
+def adicionar_consulta():
+    data = request.get_json()
+    nova = {
+        "id": len(consultas_json) + 1,
+        "dataHora": data.get("dataHora", ""),
+        "modalidade": data.get("modalidade", ""),
+        "idPaciente": data.get("idPaciente"),
+        "idMedico": data.get("idMedico"),
+    }
+    consultas_json.append(nova)
+    return jsonify(nova), 201
+
+@app.route("/api/consultas/<int:id>", methods=["PUT"])
+def atualizar_consulta(id):
+    data = request.get_json()
+    for c in consultas_json:
+        if c["id"] == id:
+            c["dataHora"] = data.get("dataHora", c["dataHora"])
+            c["modalidade"] = data.get("modalidade", c["modalidade"])
+            return jsonify(c), 200
+    return jsonify({"error": "Consulta não encontrada"}), 404
+
+@app.route("/api/consultas/<int:id>", methods=["DELETE"])
+def excluir_consulta(id):
+    global consultas_json
+    consultas_json = [c for c in consultas_json if c["id"] != id]
+    return jsonify({"message": "Consulta removida com sucesso"}), 200
+
 
 # ------------------------------------------------------------
 # EXPORTAÇÃO

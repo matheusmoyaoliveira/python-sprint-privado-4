@@ -2,6 +2,9 @@
 {% block title %}Consultas - NeuroAI{% endblock %}
 {% block content %}
 
+<link rel="stylesheet" href="{{ url_for('static', filename='css/consulta.css') }}">
+<script defer src="{{ url_for('static', filename='js/consulta.js') }}"></script>
+
 <div class="page-consultas">
   <section class="page-header">
     <h1>📅 Gerenciamento de Consultas</h1>
@@ -9,54 +12,37 @@
 
   <section class="form-section">
     <h2>Agendar Nova Consulta</h2>
-
-    <form method="POST" action="{{ url_for('consultas_novo') }}" class="form-modern">
+    <form id="formConsulta" class="form-modern">
       <div class="form-group">
-        <label>Data e Hora</label>
-        <input type="datetime-local" name="data" required>
+        <label for="dataHora">Data e Hora</label>
+        <input type="datetime-local" id="dataHora">
       </div>
+
       <div class="form-group">
-        <label>Modalidade</label>
-        <select name="modalidade">
-          <option>Presencial</option>
-          <option>Online</option>
+        <label for="modalidade">Modalidade</label>
+        <select id="modalidade">
+          <option value="Presencial">Presencial</option>
+          <option value="Online">Online</option>
         </select>
       </div>
+
       <div class="form-group">
-        <label>ID do Paciente</label>
-        <input type="text" name="id_paciente">
+        <label for="idPaciente">ID do Paciente</label>
+        <input type="number" id="idPaciente" placeholder="Ex: 1">
       </div>
+
       <div class="form-group">
-        <label>ID do Médico</label>
-        <input type="text" name="id_medico">
+        <label for="idMedico">ID do Médico</label>
+        <input type="number" id="idMedico" placeholder="Ex: 2">
       </div>
-      <button type="submit" class="btn btn-success center-btn">Agendar Consulta</button>
+
+      <button type="submit" class="btn btn-primary center-btn">Agendar Consulta</button>
     </form>
   </section>
 
   <section class="cards-list">
     <h2>Consultas Agendadas</h2>
-    <div class="cards-container">
-      {% for c in consultas %}
-      <div class="card-consulta">
-        <div class="card-header">
-          <h3>{{ c.modalidade }}</h3>
-          <p class="small">#{{ c.id }}</p>
-        </div>
-        <div class="card-body">
-          <p><b>Data e Hora:</b> {{ c.data }}</p>
-          <p><b>ID Paciente:</b> {{ c.id_paciente }}</p>
-          <p><b>ID Médico:</b> {{ c.id_medico }}</p>
-        </div>
-        <div class="card-footer">
-          <form method="POST" action="{{ url_for('consultas_excluir', cid=c.id) }}">
-            <button type="submit" class="btn btn-delete">Excluir</button>
-          </form>
-          <a href="#" class="btn btn-edit">Editar</a>
-        </div>
-      </div>
-      {% endfor %}
-    </div>
+    <div id="listaConsultas" class="cards-container"></div>
   </section>
 </div>
 
